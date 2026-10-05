@@ -17,6 +17,40 @@ An email workspace and HTTP API for connected Microsoft and Gmail accounts. Clar
 
 The browser workspace is served by the API. There is no separate frontend development server.
 
+## Email protocols and provider support
+
+SMTP (Simple Mail Transfer Protocol) submits outgoing email and is also used to transfer mail between servers. IMAP (Internet Message Access Protocol) reads and manages messages on a mailbox server, including folders, drafts, and read state. An email client using these protocols typically combines IMAP for mailbox operations with SMTP for sending.
+
+OAuth authorizes access to an account. It can authorize HTTP API requests or IMAP/SMTP connections, depending on the provider's supported authentication methods. Switching to IMAP/SMTP does not automatically remove provider application registration or consent requirements.
+
+| Provider | Current connection | Status |
+| --- | --- | --- |
+| Gmail | Gmail API over HTTPS, authorized with OAuth | Implemented |
+| Outlook / Microsoft 365 | Microsoft Graph over HTTPS, authorized with OAuth | Implemented |
+| Yahoo | Proposed IMAP/SMTP adapter with OAuth or an app password | Pending |
+| Other IMAP/SMTP providers | Proposed adapter using provider-specific servers and credentials | Pending |
+
+Clarvio Mail currently submits outgoing mail through the Gmail and Graph HTTP APIs. The provider handles subsequent delivery. `MimeKit` constructs MIME messages, headers, and attachments; the application currently has no SMTP or IMAP client implementation.
+
+The HTTP API approach provides the mailbox operations required by the current Gmail and Microsoft integrations: reading, searching, drafting, replying, moving messages, and changing read state. An IMAP/SMTP adapter would extend the service to providers offering those protocols while keeping the existing HTTP API adapters.
+
+### Planned Yahoo connection
+
+For a manually connected Yahoo mailbox, Yahoo documents these [IMAP/SMTP settings](https://help.yahoo.com/kb/SLN4075.html):
+
+| Setting | Value |
+| --- | --- |
+| IMAP server | `imap.mail.yahoo.com` |
+| IMAP port / encryption | `993` / TLS |
+| SMTP server | `smtp.mail.yahoo.com` |
+| SMTP port / encryption | `465` / TLS |
+| Username | Full Yahoo email address |
+| Password authentication | Yahoo-generated app password |
+
+When app-password creation is available for the account, generate one under Yahoo Account Security → External connections → Create app password, naming the application `Clarvio Mail`. See [Yahoo's app password guide](https://help.yahoo.com/kb/SLN15241.html?facet1=spreadsheets). This configuration cannot be entered into Clarvio Mail yet: the adapter, connection form, credential storage, and tests still need implementation.
+
+For a **Sign in with Yahoo** connection, register a Yahoo developer application and obtain the required mail-scope access. Yahoo mail access has a review and approval process; identity sign-in permission alone does not authorize mailbox access. After approval, the planned adapter would use OAuth tokens to authenticate to Yahoo's IMAP/SMTP servers. See [Yahoo's OAuth IMAP/SMTP documentation](https://senders.yahooinc.com/developer/documentation/).
+
 ## Stack and layout
 
 | Component | Implementation |
@@ -232,3 +266,8 @@ Before deployment:
 - [ ] Review Google OAuth publishing and restricted-scope verification requirements for the intended audience; see [Google's Gmail scope guidance](https://developers.google.com/workspace/gmail/api/auth/scopes).
 - [ ] Configure database backups, monitoring, migrations, restart behavior, and rollback procedures.
 - [ ] Integrate the API and signed webhooks with Clarvio Agent.
+
+Provider expansion:
+
+- [ ] Implement an IMAP/SMTP adapter, connection form, protected credentials, and provider compatibility tests.
+- [ ] Add Yahoo support; obtain approved Yahoo mail access for the OAuth connection option.
