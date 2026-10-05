@@ -27,7 +27,7 @@ def signed(event=EVENT, *, timestamp=None, secret=MAIL_SECRET):
 
 
 def app(handler):
-    bridge = EventBridge("http://agent:8710/webhooks/connectors/clarvio_mail", AGENT_SECRET,
+    bridge = EventBridge("http://agent:8000/webhooks/connectors/clarvio_mail", AGENT_SECRET,
                          {BINDING: {"connection_id": OP, "mailbox_id": BOX, "signing_secret": MAIL_SECRET}},
                          transport=httpx.MockTransport(handler))
     return Starlette(routes=[Route("/webhooks/mail/{binding_id}", bridge.receive, methods=["POST"])])

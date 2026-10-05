@@ -155,13 +155,13 @@ Operator setup, for each intended mailbox/Agent connection:
 
    ```bash
    MAIL_MCP_SECRETS_DIR=/absolute/protected/mcp-secrets \
-   AGENT_WEBHOOK_URL=http://api:8710/webhooks/connectors/clarvio_mail \
+   AGENT_WEBHOOK_URL=http://api:8000/webhooks/connectors/clarvio_mail \
    docker compose --project-name clarvio-mail-connector \
      -f deploy/compose.mcp.yaml -f deploy/compose.mcp-webhooks.yaml \
      up --build -d --wait
    ```
 
-   Use the correct Agent API hostname/port for your network. These are server-side variables; do not expose the Agent webhook secret to the model or frontend.
+   Use the correct Agent API hostname/port for your network. The studied Agent Compose publishes host port 8710 but listens on container port 8000; other containers use `api:8000`. These are server-side variables; do not expose the Agent webhook secret to the model or frontend.
 6. Publish only the webhook path with the existing public HTTPS proxy. For bundled Caddy, place this handler before the Mail catch-all inside its domain block:
 
    ```caddy
