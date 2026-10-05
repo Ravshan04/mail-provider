@@ -166,6 +166,11 @@
         "kind": "diff_whitespace",
         "status": "passed",
         "command": "git diff --check"
+      },
+      {
+        "kind": "publication_preflight",
+        "status": "passed",
+        "details": "Eight offline tests and 96-file comparison passed again; .local/actionlint/actionlint and git diff --cached --check passed."
       }
     ],
     "scope": "Agent profiles, scoped skills, knowledge, offline helpers and local discovery; no production deployment or real mail writes",
@@ -176,7 +181,7 @@
       "~/.codex/agents/project_memory.toml"
     ],
     "global_continuity_instructions": "~/.codex/AGENTS.md",
-    "publishing_status": "Personal origin-only publication requested after local setup. Verify the actual remote head and CI; organization is explicitly excluded.",
+    "publishing_status": "Agent implementation 83cad43 pushed and verified on personal origin only; organization unchanged at edd4587. Memory CI passed at that observation; full/newer CI must be checked separately.",
     "live_model_or_provider_calls": false
   },
   "integration_references": {
@@ -228,6 +233,14 @@
     "repository": "Ravshan04/clarvio-mail",
     "excluded_repository": "Abstract-IT-Group/clarvio-email",
     "remote_heads_observed_before_push": "edd4587cb0d859293842e458676584c1cc5156e4",
-    "verification": "pending actual push; do not infer success from this intent checkpoint"
+    "verification": "Personal origin/main observed at 83cad432c8e4c748348f126a331cbd529be66eb5 after successful push; organization/main rechecked unchanged at edd4587cb0d859293842e458676584c1cc5156e4. This metadata checkpoint follows the implementation commit.",
+    "published_agent_commit": "83cad432c8e4c748348f126a331cbd529be66eb5",
+    "organization_head_after_push": "edd4587cb0d859293842e458676584c1cc5156e4",
+    "ci_at_observation": {
+      "url": "https://github.com/Ravshan04/clarvio-mail/actions/runs/37336062670",
+      "head_sha": "83cad432c8e4c748348f126a331cbd529be66eb5",
+      "memory_job": "success",
+      "overall": "in_progress_at_observation"
+    }
   }
 }

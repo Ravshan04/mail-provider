@@ -53,3 +53,5 @@ Scaffold/discovery/helper checks and the final memory checkpoint are recorded in
 ## 2026-10-06: personal-only publication requested
 
 The user explicitly requested pushing the final project-agent/memory changes only to personal Ravshan04/clarvio-mail, not Abstract-IT-Group/clarvio-email. Read-only preflight confirmed both remote main heads at edd4587cb0d859293842e458676584c1cc5156e4 and the personal repo is private. Updated routing/profile/skill to preserve this intentional divergence. Publication results must be verified after pushing; no organization mutation is authorized.
+
+- Publication observed: git push origin HEAD:refs/heads/main succeeded for 83cad432c8e4c748348f126a331cbd529be66eb5. Read-only remote checks confirmed personal main at that commit and organization main unchanged at edd4587cb0d859293842e458676584c1cc5156e4. The personal memory CI job in run37336062670 passed; full CI was in progress at this observation. A follow-up metadata checkpoint records these actual results; it does not claim its own latest CI has completed.

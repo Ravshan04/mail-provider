@@ -11,7 +11,7 @@ User: Rocky / Ravshanbek; prefers concise Uzbek, autonomous completion and no re
 
 ## Agent setup checkpoint
 
-2026-10-06: both specialist profiles and skills are installed in local Codex discovery. Eight offline memory/factory tests, two skill/profile metadata checks, local instruction/skill discovery, workflow lint and a 96-file byte comparison passed. At agent setup, these new files were local and their CI job had not run. The user subsequently requested publication only to personal origin; verify current remote/CI state before treating publication as complete. Named-agent model execution and current Mail runtime were not tested by this task.
+2026-10-06: both specialist profiles and skills are installed in local Codex discovery. Eight offline memory/factory tests, two skill/profile metadata checks, local instruction/skill discovery, workflow lint and a 96-file byte comparison passed. At agent setup, these new files were local and their CI job had not run. The user subsequently requested publication only to personal origin. Agent implementation 83cad43 was pushed there and remote-verified; organization remained at edd4587. Its memory CI job passed; full CI was still running at that observation. Check newer remote/CI state rather than inferring it from this checkpoint. Named-agent model execution and current Mail runtime were not tested by this task.
 
 ## Current push target
 
