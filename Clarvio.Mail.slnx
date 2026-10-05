@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Clarvio.Mail/Clarvio.Mail.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Clarvio.Mail.Tests/Clarvio.Mail.Tests.csproj" />
+  </Folder>
+</Solution>
