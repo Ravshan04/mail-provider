@@ -4,6 +4,19 @@ An email workspace and HTTP API for connected Microsoft and Gmail accounts. Clar
 
 **Status:** local development is working. Production packaging, deployment, and Clarvio Agent integration are pending. This service connects existing mailboxes; it does not host email domains or run an SMTP server.
 
+The same source is maintained in two private repositories: [Abstract-IT-Group/clarvio-email](https://github.com/Abstract-IT-Group/clarvio-email) and [Ravshan04/clarvio-mail](https://github.com/Ravshan04/clarvio-mail).
+
+## Documentation
+
+- [Documentation index](docs/README.md)
+- [Local development and troubleshooting](docs/local-development.md)
+- [API reference and Swagger](docs/api.md)
+- [Architecture and provider adapters](docs/architecture.md)
+- [Webhook integration](docs/webhooks.md)
+- [Production deployment preparation](docs/deployment.md)
+
+For a first run, follow **Local setup** below. For HTTP integrations, start with the API reference and the interactive Swagger UI at **http://localhost:8740/swagger**.
+
 ## Features
 
 - Sign in with Microsoft or Google and connect additional mailboxes to the same workspace.
@@ -74,6 +87,7 @@ src/Clarvio.Mail/
   wwwroot/      Browser workspace
 scripts/        Local credential setup and service launcher
 tests/          Backend and browser tests
+docs/           API, architecture, local setup, webhooks, deployment
 compose.local.yaml
 ```
 
@@ -95,6 +109,15 @@ Clone the private repository using a GitHub account with access:
 git clone https://github.com/Abstract-IT-Group/clarvio-email.git
 cd clarvio-email
 ```
+
+Alternatively, clone the personal repository, which contains the same application:
+
+```bash
+git clone https://github.com/Ravshan04/clarvio-mail.git
+cd clarvio-mail
+```
+
+Choose one checkout for local development. The launcher uses shared local ports and a fixed Compose project name.
 
 ### Microsoft application
 
@@ -183,6 +206,8 @@ Keep encryption keys with protected backups of the database. Retain old keys whe
 
 ## API
 
+See the [complete API reference](docs/api.md) for all 32 operations, authentication, request examples, and error handling.
+
 Endpoints use the `/api/v1` prefix. Create an API key from the browser workspace and send it using `Authorization: Bearer <api-key>`. Keys can access the owner's connected mailboxes. Key management, webhook management, and audit access require a browser session. Browser mutations also require `X-CSRF-Token`, obtained from `GET /api/v1/session`.
 
 | Scope | Access |
@@ -240,6 +265,8 @@ Swagger and OpenAPI are enabled in Development. Outside Development, set `Mail__
 
 ## Webhooks
 
+See the [webhook integration guide](docs/webhooks.md) for subscription setup, signature verification, and delivery behavior.
+
 Add permitted destination hostnames to `Mail:WebhookHosts`, restart, then create a subscription in **Webhooks**. Destinations must use HTTPS on the default port; redirects and connections to private network addresses are blocked.
 
 The worker polls subscribed mailboxes and suppresses the initial synchronization. Event payloads contain `eventId`, `type`, `mailboxId`, `messageId`, and `createdAt`; they do not contain the email body.
@@ -275,6 +302,8 @@ Browser tests intercept email API requests and do not send real messages. At the
 - Gmail uses labels, while Microsoft uses folders. Gmail draft deletion is permanent; regular message deletion through this API moves the message to Trash.
 - The Gmail setup script currently depends on settings initialized by the Microsoft script.
 - Inbox events use polling rather than provider push subscriptions. Validate provider change-event behavior before relying on it in production.
+
+The [deployment preparation guide](docs/deployment.md) describes the required configuration and the production work still pending.
 
 Before deployment:
 
