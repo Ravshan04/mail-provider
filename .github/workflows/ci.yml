@@ -10,6 +10,30 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  mcp:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with: {persist-credentials: false}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with: {python-version: '3.14.8'}
+      - name: Install locked connector dependencies
+        working-directory: connector
+        run: |
+          python -m pip install uv==0.12.23
+          uv sync --locked
+      - name: Connector lint, tools, HTTP and webhook tests
+        working-directory: connector
+        run: |
+          uv run --locked ruff check .
+          uv run --locked pytest -q
+          uv export --locked --no-dev --no-emit-project --format requirements-txt --output-file requirements.lock > /dev/null
+          git diff --exit-code -- requirements.lock
+      - name: Build and exercise the MCP container
+        run: |
+          docker build -t clarvio-mail-mcp:local connector
+          connector/.venv/bin/python scripts/mcp-smoke.py
   tests:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

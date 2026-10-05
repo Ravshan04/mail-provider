@@ -99,6 +99,14 @@ public sealed partial class MicrosoftProvider(MailSettings settings, ProviderHtt
 
     public async Task<SendResult> Send(string accessToken, string sender, SendMailRequest request, MailMessage? reply, CancellationToken ct)
     {
+        if (NeedsAttachmentWorkflow(request))
+        {
+            // Graph sendMail has a small JSON request limit. Build/upload a draft first, then send once.
+            // On interruption a partial draft may remain. Never automatically recreate or resend it.
+            var draft = await SaveDraft(accessToken, sender, null,
+                new(request with { Subject = reply?.Subject ?? request.Subject }, ReplyMessageId: reply?.Id), ct);
+            return await SendDraft(accessToken, draft.DraftId ?? throw new ProviderError("draft_missing", "Microsoft did not return a draft ID."), ct);
+        }
         object Addresses(IEnumerable<MailAddress> addresses) => addresses.Select(a => new { emailAddress = new { address = a.Email, name = a.Name } }).ToArray();
         var message = new
         {

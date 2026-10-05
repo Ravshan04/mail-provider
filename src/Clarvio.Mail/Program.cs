@@ -21,7 +21,7 @@ if (builder.Environment.IsDevelopment() && Environment.GetEnvironmentVariable("C
     builder.Configuration.AddJsonFile(Path.GetFullPath(localConfig), optional: false, reloadOnChange: false).AddEnvironmentVariables();
 var settings = builder.Configuration.GetSection("Mail").Get<MailSettings>() ?? new();
 settings.Validate(!builder.Environment.IsDevelopment());
-builder.WebHost.ConfigureKestrel(o => { o.AddServerHeader = false; o.Limits.MaxRequestBodySize = 4 * 1024 * 1024; });
+builder.WebHost.ConfigureKestrel(o => { o.AddServerHeader = false; o.Limits.MaxRequestBodySize = 16 * 1024 * 1024; });
 builder.Services.AddSingleton(settings);
 if (settings.TrustedProxies.Length > 0)
     builder.Services.Configure<ForwardedHeadersOptions>(options => ProxyConfiguration.Configure(options, settings));
@@ -34,7 +34,8 @@ builder.Services.AddScoped<IEmailProvider, GoogleProvider>();
 builder.Services.AddScoped<IEmailProvider, MicrosoftProvider>();
 builder.Services.AddScoped<ProviderRegistry>();
 builder.Services.AddHttpClient("provider", c => c.Timeout = TimeSpan.FromSeconds(25))
-    .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler { AllowAutoRedirect = false, PooledConnectionLifetime = TimeSpan.FromMinutes(5) });
+    .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false, PooledConnectionLifetime = TimeSpan.FromMinutes(5) })
+    .RemoveAllLoggers(); // Outlook upload URLs contain pre-authenticated tokens; never log their query strings.
 builder.Services.AddHttpClient("webhook", c => c.Timeout = TimeSpan.FromSeconds(10))
     .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler { AllowAutoRedirect = false, UseProxy = false, ConnectCallback = WebhookTargets.Connect, PooledConnectionLifetime = TimeSpan.FromMinutes(1) });
 builder.Services.AddHostedService<MailWorker>();

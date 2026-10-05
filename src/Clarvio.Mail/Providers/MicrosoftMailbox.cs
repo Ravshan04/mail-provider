@@ -60,6 +60,17 @@ public sealed partial class MicrosoftProvider
     }
     private static object GraphAttachment(OutgoingAttachment file) => new Dictionary<string, object>
     { ["@odata.type"] = "#microsoft.graph.fileAttachment", ["name"] = file.Name, ["contentType"] = file.ContentType, ["contentBytes"] = file.ContentBase64 };
+    private static bool NeedsAttachmentWorkflow(SendMailRequest message) =>
+        (message.Attachments ?? []).Sum(x => (long)Convert.FromBase64String(x.ContentBase64).Length) > 2 * 1024 * 1024;
+    private async Task AddAttachment(string token, string path, OutgoingAttachment file, CancellationToken ct)
+    {
+        var bytes = Convert.FromBase64String(file.ContentBase64);
+        if (bytes.Length < 3_000_000)
+        { using var added = await http.Json(path + "/attachments", token, HttpMethod.Post, GraphAttachment(file), ct); return; }
+        using var session = await http.Json(path + "/attachments/createUploadSession", token, HttpMethod.Post,
+            new { AttachmentItem = new { attachmentType = "file", name = file.Name, contentType = file.ContentType, size = bytes.Length } }, ct);
+        await http.UploadOutlookAttachment(session.RootElement.String("uploadUrl") ?? "", bytes, ct);
+    }
     private static Dictionary<string, object> DraftBody(SendMailRequest message) => new()
     {
         ["subject"] = message.Subject,
@@ -74,20 +85,25 @@ public sealed partial class MicrosoftProvider
         if (id is null)
         {
             DraftAttachments.Keep(null, request.KeepAttachmentIds);
-            body["attachments"] = (request.Message.Attachments ?? []).Select(GraphAttachment).ToArray();
+            var separate = NeedsAttachmentWorkflow(request.Message);
+            body["attachments"] = separate ? Array.Empty<object>() : (request.Message.Attachments ?? []).Select(GraphAttachment).ToArray();
             var url = request.ReplyMessageId is null ? Graph + "/me/messages" : Graph + "/me/messages/" + Uri.EscapeDataString(request.ReplyMessageId) + "/createReply";
             using var response = await http.Json(url, token, HttpMethod.Post, request.ReplyMessageId is null ? body : new { message = body }, ct);
-            return await GetDraft(token, response.RootElement.String("id") ?? throw new ProviderError("draft_missing", "Microsoft did not return a draft ID."), ct);
+            var createdId = response.RootElement.String("id") ?? throw new ProviderError("draft_missing", "Microsoft did not return a draft ID.");
+            if (separate)
+                foreach (var file in request.Message.Attachments ?? [])
+                    await AddAttachment(token, Graph + "/me/messages/" + Uri.EscapeDataString(createdId), file, ct);
+            return await GetDraft(token, createdId, ct);
         }
         var existing = await GetDraft(token, id, ct); var keep = DraftAttachments.Keep(existing, request.KeepAttachmentIds);
         if (keep.Sum(x => x.Size) + (request.Message.Attachments ?? []).Sum(x => (long)Convert.FromBase64String(x.ContentBase64).Length) > MessageValidation.MaxAttachmentBytes || keep.Count + (request.Message.Attachments?.Count ?? 0) > 10)
-            throw new ApiError(400, "invalid_attachments", "Use at most 10 attachments, up to 2 MiB combined.");
+            throw new ApiError(400, "invalid_attachments", "Use at most 10 attachments, up to 10 MiB combined.");
         var path = Graph + "/me/messages/" + Uri.EscapeDataString(id);
         using var update = await http.Json(path, token, HttpMethod.Patch, body, ct);
         foreach (var file in existing.Attachments.Where(x => !keep.Any(k => k.Id == x.Id)))
         { using var delete = await http.Json(path + "/attachments/" + Uri.EscapeDataString(file.Id), token, HttpMethod.Delete, null, ct); }
         foreach (var file in request.Message.Attachments ?? [])
-        { using var add = await http.Json(path + "/attachments", token, HttpMethod.Post, GraphAttachment(file), ct); }
+        { await AddAttachment(token, path, file, ct); }
         return await GetDraft(token, id, ct);
     }
     public async Task<SendResult> SendDraft(string token, string id, CancellationToken ct)

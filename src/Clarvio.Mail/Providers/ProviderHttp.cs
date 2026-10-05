@@ -8,7 +8,48 @@ namespace Clarvio.Mail.Providers;
 
 public sealed class ProviderHttp(IHttpClientFactory clients)
 {
-    private const int MaxBytes = 8 * 1024 * 1024;
+    private const int MaxBytes = 16 * 1024 * 1024;
+
+    // Outlook's upload URL is pre-authenticated. Never send the Graph bearer token to it.
+    public async Task UploadOutlookAttachment(string url, byte[] bytes, CancellationToken ct)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != "https" || !uri.IsDefaultPort ||
+            uri.Host != "outlook.office.com" || !uri.AbsolutePath.StartsWith("/api/", StringComparison.Ordinal) ||
+            !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment))
+            throw new ProviderError("invalid_upload_url", "Microsoft returned an unsupported attachment upload URL.");
+        const int chunkSize = 2 * 1024 * 1024;
+        for (var offset = 0; offset < bytes.Length;)
+        {
+            var count = Math.Min(chunkSize, bytes.Length - offset);
+            using var request = new HttpRequestMessage(HttpMethod.Put, uri) { Content = new ByteArrayContent(bytes, offset, count) };
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(offset, offset + count - 1, bytes.Length);
+            HttpResponseMessage response;
+            try { response = await clients.CreateClient("provider").SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct); }
+            catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException)
+            { throw new ProviderError("attachment_upload_unknown", "Attachment upload was interrupted. Read the draft before retrying.", uncertain: true); }
+            using (response)
+            {
+                var last = offset + count == bytes.Length;
+                if (response.StatusCode != (last ? HttpStatusCode.Created : HttpStatusCode.OK))
+                    throw new ProviderError("attachment_upload_failed", "Microsoft did not confirm the attachment upload. Read the draft before retrying.", uncertain: true);
+                if (!last)
+                {
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(await BoundedBytes(response, ct));
+                        var ranges = doc.RootElement.Array("nextExpectedRanges").Select(x => x.GetString()).ToArray();
+                        var next = (offset + count).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        if (ranges.Length != 1 || ranges[0] is null || ranges[0]!.TrimEnd('-') != next)
+                            throw new JsonException();
+                    }
+                    catch (Exception ex) when (ex is JsonException or InvalidOperationException or ProviderError or HttpRequestException or OperationCanceledException)
+                    { throw new ProviderError("attachment_upload_unknown", "Microsoft did not confirm the next attachment range. Read the draft before retrying.", uncertain: true); }
+                }
+            }
+            offset += count;
+        }
+    }
     public async Task<JsonDocument> Json(string url, string? token, HttpMethod? method, object? body, CancellationToken ct)
     {
         using var response = await Request(url, token, method ?? HttpMethod.Get, body, ct, true);

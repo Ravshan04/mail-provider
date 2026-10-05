@@ -1,0 +1,6 @@
+**
+!Dockerfile
+!requirements.lock
+!*.py
+!skills/
+!skills/**

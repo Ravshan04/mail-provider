@@ -36,7 +36,7 @@ public static class ApiDocumentation
             Details: "Choose inbox, archive, trash, or a custom folder ID. Supply sourceFolderId when moving between Gmail labels. Drafts must be edited or sent through draft endpoints."),
         new("DELETE", "api/v1/mailboxes/{mailboxId}/messages/{messageId}", "TrashMessage", "Messages", "Move a regular message to Trash", typeof(MailMessage), "mail:write"),
         new("GET", "api/v1/mailboxes/{mailboxId}/messages/{messageId}/attachments/{attachmentId}", "DownloadAttachment", "Messages", "Download a file attachment", Scope: "mail:read",
-            Details: "File download; maximum 5 MiB. Inline previews and non-file Microsoft attachment types are not supported."),
+            Details: "File download; maximum 10 MiB. Inline previews and non-file Microsoft attachment types are not supported."),
         new("POST", "api/v1/mailboxes/{mailboxId}/messages", "SendMessage", "Sending", "Send a new message", typeof(OperationResponse), "mail:send"),
         new("POST", "api/v1/mailboxes/{mailboxId}/messages/{messageId}/reply", "ReplyToMessage", "Sending", "Send a reply with optional CC, BCC, and attachments", typeof(OperationResponse), "mail:send"),
         new("GET", "api/v1/operations/{id}", "GetSendOperation", "Sending", "Inspect a send outcome", typeof(OperationResponse), "mail:send",
@@ -144,7 +144,7 @@ public static class ApiDocumentation
             };
         }
         if (doc.Id is "SendMessage" or "ReplyToMessage")
-            operation.Description += " Up to 50 recipients, 10 attachments, and 2 MiB of attachment content combined. Attachment content is base64. A To address and subject are required.";
+            operation.Description += " Up to 50 recipients, 10 attachments, and 10 MiB of attachment content combined. Attachment content is base64. A To address and subject are required.";
         if (doc.Id is "CreateDraft" or "UpdateDraft")
             operation.Description += " Empty To and subject are allowed for drafts. Omit keepAttachmentIds to retain existing files; use [] to remove all; supply IDs to keep selected files. New attachments go in message.attachments. replyMessageId is for new reply drafts.";
 

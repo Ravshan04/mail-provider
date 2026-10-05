@@ -1,0 +1,11 @@
+# Optional override for compose.mcp.yaml. Mount operator-managed bindings and
+# Agent's infrastructure signing secret; never put Mail API keys here.
+services:
+  clarvio-mail-mcp:
+    environment:
+      MCP_WEBHOOK_BINDINGS_FILE: /run/secrets/mcp-webhook-bindings.json
+      AGENT_WEBHOOK_SECRET_FILE: /run/secrets/agent-webhook-secret
+      AGENT_WEBHOOK_URL: ${AGENT_WEBHOOK_URL:-http://api:8710/webhooks/connectors/clarvio_mail}
+    volumes:
+      - ${MAIL_MCP_SECRETS_DIR:?Set an absolute secrets directory}/mcp-webhook-bindings.json:/run/secrets/mcp-webhook-bindings.json:ro
+      - ${MAIL_MCP_SECRETS_DIR:?Set an absolute secrets directory}/agent-webhook-secret:/run/secrets/agent-webhook-secret:ro

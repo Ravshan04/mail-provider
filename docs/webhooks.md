@@ -93,3 +93,7 @@ Disabling a subscription stops future delivery for that subscription. A repeated
 Only mailboxes with active subscriptions are polled. The initial synchronization is suppressed, so adding a subscription is not a historical mailbox export. The default poll interval is 60 seconds, with a minimum configured value of 15 seconds.
 
 Gmail change history and Microsoft folder delta APIs differ. Events are based on provider change results; validate receipt/update behavior against live mailboxes before treating every event as a newly delivered email. This implementation does not configure native Gmail push or Microsoft Graph webhook subscriptions.
+
+## Clarvio Agent triggers
+
+Use [the MCP webhook bridge](mcp.md#optional-incoming-email-triggers) to translate these signatures and payloads into Agent's `X-Signature`/connection event contract. Do not send Mail payloads directly to Agent's connector webhook endpoint. Bind each subscription to the intended mailbox and user's Agent connection, and keep its signing secret in a protected mounted configuration file.

@@ -236,3 +236,7 @@ Real ACME issuance, provider consent, controlled live sends/replies/CC/BCC/attac
 | Login denied | Check allowlist and provider test-user/consent settings. |
 | Swagger 404 | Expected until `Mail__EnableSwagger=true`. |
 | Tokens cannot decrypt | Restore corresponding encryption-key versions with the database. |
+
+## Optional Clarvio Agent connector
+
+After deploying Mail, follow [the MCP deployment guide](mcp.md#docker-and-agent-registration) to launch the separate connector service on Mail and Agent private Docker networks and register it in Agent. No account keys belong in Compose environment variables. The optional signed webhook bridge needs protected mounted bindings, Agent's infrastructure signing secret, a public HTTPS webhook route, and a Mail webhook subscription. Include those mounted files in your backup policy; the standard Mail backup helper covers the Mail API/database configuration only.

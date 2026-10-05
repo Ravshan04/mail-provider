@@ -151,8 +151,85 @@ public sealed class MailboxProviderTests
         Assert.True(error.Uncertain); handler.AssertComplete();
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Microsoft_ten_mib_attachments_upload_to_a_draft_before_one_send(bool reply)
+    {
+        const int chunk = 2 * 1024 * 1024;
+        var steps = new List<Step> {
+            new(HttpMethod.Post, reply ? "/me/messages/original/createReply" : "/me/messages", "{\"id\":\"draft-one\"}"),
+            new(HttpMethod.Post, "/me/messages/draft-one/attachments/createUploadSession", "{\"uploadUrl\":\"https://outlook.office.com/api/upload?authtoken=private\"}")
+        };
+        for (var i = 0; i < 5; i++)
+            steps.Add(new(HttpMethod.Put, "/api/upload", i == 4 ? "" : "{\"nextExpectedRanges\":[\"" + ((i + 1) * chunk) + "-\"]}", i == 4 ? HttpStatusCode.Created : HttpStatusCode.OK));
+        steps.Add(new(HttpMethod.Get, "/me/messages/draft-one", GraphDraft));
+        steps.Add(new(HttpMethod.Post, "/me/messages/draft-one/send", "", HttpStatusCode.Accepted));
+        var handler = new ScriptedHandler(steps);
+        var request = new SendMailRequest([new("to@example.com")], "New subject", "Hello", Bcc: [new("hidden@example.com")],
+            Attachments: [new("large.bin", "application/octet-stream", Convert.ToBase64String(new byte[MessageValidation.MaxAttachmentBytes]))]);
+        MessageValidation.Validate(request);
+        MailMessage? original = reply ? new("original", null, "Original subject", null, [], [], null, "", "", null, true, []) : null;
+        await new MicrosoftProvider(SecurityTests.Settings(), new(new Clients(handler))).Send("fake-graph-token", "sender@example.com", request, original, default);
+        using var created = JsonDocument.Parse(handler.Requests[0].Body!);
+        var body = reply ? created.RootElement.GetProperty("message") : created.RootElement;
+        Assert.Empty(body.GetProperty("attachments").EnumerateArray());
+        Assert.Equal(reply ? "Original subject" : "New subject", body.GetProperty("subject").GetString());
+        Assert.Equal("hidden@example.com", body.GetProperty("bccRecipients")[0].GetProperty("emailAddress").GetProperty("address").GetString());
+        var uploads = handler.Requests.Where(x => x.Method == HttpMethod.Put).ToArray();
+        Assert.Equal(5, uploads.Length);
+        for (var i = 0; i < uploads.Length; i++)
+        {
+            Assert.Null(uploads[i].Authorization);
+            Assert.Equal(chunk, uploads[i].Bytes);
+            Assert.Equal($"bytes {i * chunk}-{(i + 1) * chunk - 1}/{MessageValidation.MaxAttachmentBytes}", uploads[i].Range);
+        }
+        Assert.Single(handler.Requests, x => x.Path.EndsWith("/send", StringComparison.Ordinal));
+        handler.AssertComplete();
+    }
+
+    [Theory]
+    [InlineData("http://outlook.office.com/api/upload")]
+    [InlineData("https://outlook.office.com.evil.example/api/upload")]
+    [InlineData("https://outlook.office.com:8443/api/upload")]
+    [InlineData("https://user:password@outlook.office.com/api/upload")]
+    public async Task Microsoft_upload_rejects_untrusted_urls_without_network_access(string url)
+    {
+        var handler = new ScriptedHandler([]);
+        var error = await Assert.ThrowsAsync<ProviderError>(() => new ProviderHttp(new Clients(handler)).UploadOutlookAttachment(url, [1], default));
+        Assert.Equal("invalid_upload_url", error.Code); Assert.Empty(handler.Requests);
+    }
+
+    [Fact]
+    public async Task Microsoft_upload_does_not_retry_a_failed_range_or_send_partial_files()
+    {
+        var handler = new ScriptedHandler([new(HttpMethod.Put, "/api/upload", "", HttpStatusCode.InternalServerError)]);
+        var error = await Assert.ThrowsAsync<ProviderError>(() => new ProviderHttp(new Clients(handler)).UploadOutlookAttachment(
+            "https://outlook.office.com/api/upload?authtoken=private", new byte[MessageValidation.MaxAttachmentBytes], default));
+        Assert.True(error.Uncertain); Assert.Single(handler.Requests); handler.AssertComplete();
+    }
+
+    [Theory]
+    [InlineData("{\"nextExpectedRanges\":[\"0-\"]}")]
+    [InlineData("{\"nextExpectedRanges\":[1]}")]
+    public async Task Microsoft_upload_refuses_an_unexpected_next_range(string response)
+    {
+        var handler = new ScriptedHandler([new(HttpMethod.Put, "/api/upload", response)]);
+        var error = await Assert.ThrowsAsync<ProviderError>(() => new ProviderHttp(new Clients(handler)).UploadOutlookAttachment(
+            "https://outlook.office.com/api/upload?authtoken=private", new byte[MessageValidation.MaxAttachmentBytes], default));
+        Assert.True(error.Uncertain); Assert.Single(handler.Requests); handler.AssertComplete();
+    }
+
+    [Fact]
+    public void Attachments_above_ten_mib_are_rejected()
+    {
+        var request = new SendMailRequest([new("to@example.com")], "Subject", "Hello",
+            Attachments: [new("large.bin", "application/octet-stream", Convert.ToBase64String(new byte[MessageValidation.MaxAttachmentBytes + 1]))]);
+        Assert.Throws<ApiError>(() => MessageValidation.Validate(request));
+    }
+
     private sealed record Step(HttpMethod Method, string Path, string Response, HttpStatusCode Status = HttpStatusCode.OK);
-    private sealed record Captured(HttpMethod Method, string Path, string? Body);
+    private sealed record Captured(HttpMethod Method, string Path, string? Body, string? Authorization, string? Range, int Bytes);
     private sealed class ScriptedHandler(IEnumerable<Step> steps) : HttpMessageHandler
     {
         private readonly Queue<Step> remaining = new(steps);
@@ -162,7 +239,10 @@ public sealed class MailboxProviderTests
         {
             var step = remaining.Dequeue(); var path = request.RequestUri!.AbsolutePath;
             Assert.Equal(step.Method, request.Method); Assert.EndsWith(step.Path, path);
-            Requests.Add(new(request.Method, path, request.Content is null ? null : await request.Content.ReadAsStringAsync(ct)));
+            var binary = request.Content?.Headers.ContentType?.MediaType == "application/octet-stream";
+            Requests.Add(new(request.Method, path, binary || request.Content is null ? null : await request.Content.ReadAsStringAsync(ct),
+                request.Headers.Authorization?.ToString(), request.Content?.Headers.ContentRange?.ToString(),
+                binary ? (await request.Content!.ReadAsByteArrayAsync(ct)).Length : 0));
             return new(step.Status) { Content = new StringContent(step.Response, Encoding.UTF8, "application/json") };
         }
     }

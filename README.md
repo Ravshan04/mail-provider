@@ -2,7 +2,7 @@
 
 An email workspace and HTTP API for connected Microsoft and Gmail accounts. Clarvio Mail reads and sends through Microsoft Graph and the Gmail API using delegated OAuth authorization.
 
-**Status:** local development and production Docker/Compose packaging are implemented. Deployment to the real Clarvio server, live-provider write validation, and Clarvio Agent integration are pending. This service connects existing mailboxes; it does not host email domains or run an SMTP server.
+**Status:** local development and production Docker/Compose packaging are implemented. The Clarvio Agent MCP connector is implemented and tested; production registration, deployment to the real Clarvio server, and live-provider write validation are pending. This service connects existing mailboxes; it does not host email domains or run an SMTP server.
 
 The same source is maintained in two private repositories: [Abstract-IT-Group/clarvio-email](https://github.com/Abstract-IT-Group/clarvio-email) and [Ravshan04/clarvio-mail](https://github.com/Ravshan04/clarvio-mail).
 
@@ -13,12 +13,14 @@ The same source is maintained in two private repositories: [Abstract-IT-Group/cl
 - [API reference and Swagger](docs/api.md)
 - [Architecture and provider adapters](docs/architecture.md)
 - [Webhook integration](docs/webhooks.md)
+- [Clarvio Agent MCP developer and deployment guide](docs/mcp.md)
 - [Complete server deployment guide](docs/deployment.md)
 
 For a first run, follow **Local setup** below. For HTTP integrations, start with the API reference and the interactive Swagger UI at **http://localhost:8740/swagger**.
 
 ## Features
 
+- Clarvio Agent integration through a separate stateless MCP service: 17 tools, an operations skill, files, and an optional signed event bridge.
 - Sign in with Microsoft or Google and connect additional mailboxes to the same workspace.
 - Browse and search messages with pagination; download file attachments.
 - Send, reply, reply all, and forward message text, with To, CC, BCC, and attachments.
@@ -89,7 +91,8 @@ scripts/        Local credential setup and service launcher
 tests/          Backend and browser tests
 docs/           API, architecture, local setup, webhooks, deployment
 deploy/         Production Compose, HTTPS proxy, host-proxy example
-.github/        Backend, browser, and production deployment CI
+.github/        Backend, browser, MCP, and production deployment CI
+connector/      Stateless Python MCP service, skill, doctor, tests and Docker image
 Dockerfile      Production application image
 compose.local.yaml
 ```
@@ -297,7 +300,7 @@ npx playwright install chromium
 npm test
 ```
 
-Browser tests intercept email API requests and do not send real messages. At the production packaging checkpoint, all 51 backend and 10 browser tests passed, including documentation generation, Production settings, API key authorization, Swagger session CSRF, and trusted proxy handling. Real Gmail and Microsoft folder/draft listing was checked separately; live send and mutation testing remains pending.
+Browser tests intercept email API requests and do not send real messages. The MCP implementation adds file-size and Microsoft upload-session coverage to the backend tests. Backend and browser checks cover documentation generation, Production settings, API key authorization, Swagger session CSRF, and trusted proxy handling. Real Gmail and Microsoft folder/draft listing was checked separately; live send and mutation testing remains pending.
 
 Production container verification builds the image and exercises an isolated HTTPS proxy, migrations, health, Swagger policy, OAuth redirect/cookie construction, backup/restore, and host-proxy mode using fake OAuth credentials:
 
@@ -305,7 +308,9 @@ Production container verification builds the image and exercises an isolated HTT
 python3 scripts/production-smoke.py
 ```
 
-GitHub Actions runs the backend, browser, and production container checks on main pushes and pull requests in both repositories. It does not automatically deploy a server.
+See the [MCP guide](docs/mcp.md) for connector tests, its isolated Docker smoke, and the read-only live doctor.
+
+GitHub Actions runs the backend, browser, MCP, and production container checks on main pushes and pull requests in both repositories. It does not automatically deploy a server.
 
 ## Deploy to another server
 
@@ -323,7 +328,7 @@ The setup generates protected production credentials. Bundled Caddy supplies HTT
 
 ## Current limits and deployment work
 
-- Outgoing mail supports up to 50 recipients, 10 files, and 2 MiB of attachments combined. File downloads are limited to 5 MiB each.
+- Outgoing mail supports up to 50 recipients, 10 files, and 10 MiB of attachments combined. File downloads are limited to 10 MiB each.
 - The UI displays HTML email as text. Editing an HTML draft's body saves it as plain text; forwarding includes message text and requires selecting attachments explicitly.
 - Gmail uses labels, while Microsoft uses folders. Gmail draft deletion is permanent; regular message deletion through this API moves the message to Trash.
 - The Gmail setup script currently depends on settings initialized by the Microsoft script.
@@ -340,7 +345,8 @@ Before deployment:
 - [ ] Supply production credentials, the Microsoft certificate, encryption keys, and invited login identities through protected configuration.
 - [ ] Review Google OAuth publishing and restricted-scope verification requirements for the intended audience; see [Google's Gmail scope guidance](https://developers.google.com/workspace/gmail/api/auth/scopes).
 - [ ] Configure database backups, monitoring, migrations, restart behavior, and rollback procedures.
-- [ ] Integrate the API and signed webhooks with Clarvio Agent.
+- [x] Implement the Clarvio Agent MCP connector, skill, files and signed webhook adapter.
+- [ ] Register/enable the connector in production Agent, connect a scoped Mail key, and validate incoming triggers.
 
 Provider expansion:
 

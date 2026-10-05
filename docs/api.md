@@ -85,7 +85,7 @@ List queries accept `folder` (default `inbox`), `query`, `limit` (default 25, ra
 
 A page contains `messages` and `nextCursor`. Return the opaque cursor with the same mailbox, folder, search, and limit. Cursors expire after 30 minutes; restart pagination when expired. List messages can omit body details, so fetch a specific message to read its body and attachment metadata.
 
-A message includes `id`, `threadId`, `subject`, `from`, `to`, `cc`, `receivedAt`, `preview`, `textBody`, `htmlBody`, `isRead`, and `attachments`, plus optional reply headers, `bcc`, and `draftId`. Attachment entries expose `id`, `name`, `contentType`, `size`, and optional `contentId`. File downloads use `application/octet-stream` with a download filename, and support at most 5 MiB per file.
+A message includes `id`, `threadId`, `subject`, `from`, `to`, `cc`, `receivedAt`, `preview`, `textBody`, `htmlBody`, `isRead`, and `attachments`, plus optional reply headers, `bcc`, and `draftId`. Attachment entries expose `id`, `name`, `contentType`, `size`, and optional `contentId`. File downloads use `application/octet-stream` with a download filename, and support at most 10 MiB per file.
 
 Set read state with `{"isRead":true}`. Move with `{"destinationFolderId":"archive","sourceFolderId":"inbox"}`. Use a destination returned by `/folders`; `sourceFolderId` helps preserve unrelated Gmail labels. Restore a trashed message by moving it to Inbox or another supported destination. Regular message deletion moves to Trash.
 
@@ -106,7 +106,7 @@ Example send/reply body, with placeholder addresses:
 }
 ```
 
-`cc`, `bcc`, `htmlBody`, and `attachments` are optional. Outgoing messages support at most 50 recipients across all recipient fields, 10 files, and 2 MiB of attachment bytes combined. Browser reply-all and forward actions construct requests using the existing routes; there is no dedicated forward endpoint.
+`cc`, `bcc`, `htmlBody`, and `attachments` are optional. Outgoing messages support at most 50 recipients across all recipient fields, 10 files, and 10 MiB of attachment bytes combined. Browser reply-all and forward actions construct requests using the existing routes; there is no dedicated forward endpoint.
 
 Create/update a draft by wrapping the send body in `message`:
 

@@ -77,7 +77,7 @@ public static class Endpoints
         api.MapGet("/mailboxes/{mailboxId:guid}/messages/{messageId}/attachments/{attachmentId}", async (HttpContext ctx, Guid mailboxId, string messageId, string attachmentId, MailService mail, CancellationToken ct) =>
         {
             var file = await mail.Attachment(RequestIdentity.Require(ctx, "mail:read").UserId, mailboxId, messageId, attachmentId, ct);
-            if (file.Bytes.Length > 5 * 1024 * 1024) throw new ApiError(413, "attachment_too_large", "Downloads support attachments up to 5 MiB.");
+            if (file.Bytes.Length > MessageValidation.MaxAttachmentBytes) throw new ApiError(413, "attachment_too_large", "Downloads support attachments up to 10 MiB.");
             return Results.File(file.Bytes, "application/octet-stream", MessageValidation.SafeFilename(file.Name));
         });
         api.MapPost("/mailboxes/{mailboxId:guid}/messages", async (HttpContext ctx, Guid mailboxId, SendMailRequest request, MailService mail, CancellationToken ct) =>

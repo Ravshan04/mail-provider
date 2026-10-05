@@ -5,7 +5,7 @@ namespace Clarvio.Mail.Providers;
 
 public static class MessageValidation
 {
-    public const int MaxAttachmentBytes = 2 * 1024 * 1024;
+    public const int MaxAttachmentBytes = 10 * 1024 * 1024;
     public static void Validate(SendMailRequest request, bool draft = false)
     {
         if (request.To is null || request.TextBody is null) Fail("To recipients and a text body are required.");
@@ -28,10 +28,10 @@ public static class MessageValidation
                 attachment.Name.Any(char.IsControl) || attachment.Name.IndexOfAny(['/', '\\']) >= 0) Fail("An attachment filename is invalid.");
             if (string.IsNullOrEmpty(attachment.ContentType) || !ContentType.TryParse(attachment.ContentType, out _) || attachment.ContentType.Any(char.IsControl)) Fail("An attachment content type is invalid.");
             if (attachment.ContentBase64 is null) Fail("An attachment is not valid base64.");
-            if (attachment.ContentBase64.Length > (MaxAttachmentBytes + 2) / 3 * 4) Fail("Attachments exceed the 2 MiB combined limit.");
+            if (attachment.ContentBase64.Length > (MaxAttachmentBytes + 2) / 3 * 4) Fail("Attachments exceed the 10 MiB combined limit.");
             try { total += Convert.FromBase64String(attachment.ContentBase64).Length; }
             catch (FormatException) { Fail("An attachment is not valid base64."); }
-            if (total > MaxAttachmentBytes) Fail("Attachments exceed the 2 MiB combined limit.");
+            if (total > MaxAttachmentBytes) Fail("Attachments exceed the 10 MiB combined limit.");
         }
     }
     [System.Diagnostics.CodeAnalysis.DoesNotReturn]

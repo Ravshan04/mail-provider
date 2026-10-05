@@ -1,0 +1,27 @@
+# Run after the Mail production stack and Clarvio Agent network exist.
+# No public MCP port. Mail account credentials arrive from Agent per request.
+name: ${MAIL_MCP_PROJECT_NAME:-clarvio-mail-connector}
+
+services:
+  clarvio-mail-mcp:
+    image: ${MAIL_MCP_IMAGE:-clarvio-mail-mcp:local}
+    build:
+      context: ../connector
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ['/tmp:size=32m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      MAIL_API_URL: ${MAIL_API_URL:-http://app:8740}
+      MCP_HOST: 0.0.0.0
+      MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost:*,127.0.0.1:*,clarvio-mail-mcp:*}
+    networks: [mail, agent]
+
+networks:
+  mail:
+    external: true
+    name: ${MAIL_MCP_NETWORK:-clarvio-mail_proxy-net}
+  agent:
+    external: true
+    name: ${CLARVIO_AGENT_NETWORK:-clarvio-agent_default}

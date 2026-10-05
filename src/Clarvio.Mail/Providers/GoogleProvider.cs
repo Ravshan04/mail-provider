@@ -74,7 +74,7 @@ public sealed partial class GoogleProvider(MailSettings settings, ProviderHttp h
     {
         var message = await Get(accessToken, messageId, ct);
         var meta = message.Attachments.SingleOrDefault(x => x.Id == attachmentId) ?? throw new ApiError(404, "attachment_not_found", "That attachment does not belong to this email.");
-        if (meta.Size > 5 * 1024 * 1024) throw new ApiError(413, "attachment_too_large", "This attachment exceeds the 5 MiB download limit.");
+        if (meta.Size > MessageValidation.MaxAttachmentBytes) throw new ApiError(413, "attachment_too_large", "This attachment exceeds the 10 MiB download limit.");
         using var doc = await http.Json(Api + "/messages/" + Uri.EscapeDataString(messageId) + "/attachments/" + Uri.EscapeDataString(attachmentId), accessToken, null, null, ct);
         return new DownloadedAttachment(Secrets.DecodeBase64Url(doc.RootElement.String("data") ?? ""), MessageValidation.SafeFilename(meta.Name), meta.ContentType);
     }

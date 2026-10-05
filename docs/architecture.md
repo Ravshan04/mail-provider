@@ -75,3 +75,7 @@ The current worker runs inside the application process. There is no separate job
 Provider calls and local persistence are separate systems. Interrupted sends can have unknown outcomes; multipart draft edits can be partially applied by a provider. Read the [API outcome guidance](api.md#send-outcomes-and-idempotency) before implementing retries.
 
 Local development, Swagger, production Docker/Compose packaging, trusted proxy handling, release commands, and backup/restore are implemented. The actual Clarvio server deployment and Agent integration remain pending; see the [server deployment guide](deployment.md).
+
+## Clarvio Agent adapter
+
+`connector/` is a separate stateless Python MCP service in this Mail platform repository. It forwards only each request's scoped API key to a fixed Mail origin; it stores no account credentials or caches. Agent fetches its manifest and operations skill and applies existing approval rules using the tool annotations. File inputs use base64 fields and outputs use embedded blobs. An optional webhook bridge verifies Mail signatures, binds mailbox IDs to persistent operator-configured Agent connection IDs, and translates payloads/signatures without acknowledging delivery before Agent accepts it. See [the MCP guide](mcp.md) for the full contract, limits and deployment.
