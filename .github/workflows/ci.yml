@@ -10,6 +10,16 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  memory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with: {persist-credentials: false}
+      - name: Offline project agent and byte inventory checks
+        run: |
+          python3 -m unittest discover -s tests/memory -v
+          python3 scripts/agent-memory.py check
   mcp:
     runs-on: ubuntu-24.04
     timeout-minutes: 15

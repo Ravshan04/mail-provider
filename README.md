@@ -14,6 +14,7 @@ The same source is maintained in two private repositories: [Abstract-IT-Group/cl
 - [Architecture and provider adapters](docs/architecture.md)
 - [Webhook integration](docs/webhooks.md)
 - [Clarvio Agent MCP developer and deployment guide](docs/mcp.md)
+- [Persistent development agent and project memory](docs/project-agent.md)
 - [Complete server deployment guide](docs/deployment.md)
 
 For a first run, follow **Local setup** below. For HTTP integrations, start with the API reference and the interactive Swagger UI at **http://localhost:8740/swagger**.

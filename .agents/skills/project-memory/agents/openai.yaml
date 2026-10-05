@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Memory Agent"
+  short_description: "Loyihalar uchun agent va davomiy xotira yaratish"
+  default_prompt: "Use $project-memory to save this task as a reusable project agent with verified context."

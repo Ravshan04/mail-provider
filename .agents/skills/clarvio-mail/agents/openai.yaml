@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clarvio Mail Agent"
+  short_description: "Clarvio Mail, MCP va deploy bo‘yicha loyiha xotirasi"
+  default_prompt: "Use $clarvio-mail to resume the project from its saved state and complete my request."

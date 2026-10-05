@@ -9,6 +9,7 @@ Clarvio Mail connects Gmail and Microsoft mailboxes through OAuth and provider H
 | [API reference](api.md) | Swagger, authentication, all 32 operations, payloads, and send outcomes |
 | [Architecture](architecture.md) | Components, ownership, credentials, provider adapters, and persistence |
 | [Clarvio Agent MCP](mcp.md) | Tools, scopes, files, doctor, Docker networking, registration and signed triggers |
+| [Persistent project agent](project-agent.md) | Resume context, named specialist, source byte inventory and agents for other projects |
 | [Webhooks](webhooks.md) | Subscription setup, signed requests, retries, and polling limitations |
 | [Server deployment](deployment.md) | Fresh server setup, domain/provider changes, HTTPS, release commands, backup/restore, upgrades/rollback |
 

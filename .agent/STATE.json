@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "project": "clarvio-mail",
+  "aliases": [
+    "clarvio-email",
+    "Clarvio Mail",
+    "clarvio_mail MCP"
+  ],
+  "agent_name": "clarvio_mail",
+  "skill_name": "clarvio-mail",
+  "checkpoint": {
+    "implementation_commit": "edd4587cb0d859293842e458676584c1cc5156e4",
+    "observed_date": "2026-10-05",
+    "timezone": "Asia/Samarkand",
+    "scope": "Mail API, MCP implementation and both mirrored main branches; historical observation"
+  },
+  "remotes": {
+    "origin": "https://github.com/Ravshan04/clarvio-mail.git",
+    "organization": "https://github.com/Abstract-IT-Group/clarvio-email.git",
+    "mirrored_branch": "main",
+    "current_push_scope": {
+      "origin": "authorized for project-agent/memory changes",
+      "organization": "explicitly excluded by the user; preserve edd4587 baseline for this batch"
+    }
+  },
+  "services": {
+    "mail_api_local": "http://127.0.0.1:8740",
+    "mail_db_local_port": 5548,
+    "mail_mcp_default": "http://127.0.0.1:8741",
+    "mail_mcp_private": "http://clarvio-mail-mcp:8741",
+    "agent_api_host_port": 8710,
+    "agent_api_container_port": 8000,
+    "agent_frontend_host_port": 8711,
+    "runtime_status": "not rechecked by this memory-only task; addresses are configuration facts, not liveness claims"
+  },
+  "capabilities": {
+    "mail_api_operations": 32,
+    "mcp_tools": 17,
+    "providers": [
+      "gmail",
+      "outlook"
+    ],
+    "mail_protocol": "provider HTTPS APIs authorized by delegated OAuth",
+    "agent_connection": "user-scoped Clarvio Mail API key per request",
+    "automatic_cd": false,
+    "production_deployed": false,
+    "production_agent_registered": false,
+    "outgoing_attachments_mib_combined": 10,
+    "download_mib_per_file": 10,
+    "api_and_mcp_request_mib": 16
+  },
+  "validation": [
+    {
+      "kind": "backend",
+      "count": 61,
+      "status": "passed",
+      "commit": "edd4587",
+      "command": "dotnet test Clarvio.Mail.slnx --configuration Release --no-restore"
+    },
+    {
+      "kind": "browser",
+      "count": 10,
+      "status": "passed",
+      "commit": "edd4587",
+      "command": "npm test --prefix tests/ui"
+    },
+    {
+      "kind": "mcp",
+      "count": 59,
+      "status": "passed",
+      "commit": "edd4587",
+      "command": "cd connector && uv run --locked pytest -q"
+    },
+    {
+      "kind": "production_smoke",
+      "status": "passed",
+      "commit": "edd4587",
+      "command": "python3 scripts/production-smoke.py",
+      "live_provider_writes": false
+    },
+    {
+      "kind": "mcp_container_smoke",
+      "status": "passed",
+      "commit": "edd4587",
+      "command": "connector/.venv/bin/python scripts/mcp-smoke.py",
+      "decoded_file_mib": 10,
+      "live_provider_writes": false
+    },
+    {
+      "kind": "actual_agent_client_and_live_doctor",
+      "status": "passed",
+      "commit": "edd4587",
+      "mailboxes_read": 1,
+      "temporary_readonly_key_removed": true,
+      "live_provider_writes": false
+    },
+    {
+      "kind": "personal_ci",
+      "status": "success",
+      "commit": "edd4587",
+      "url": "https://github.com/Ravshan04/clarvio-mail/actions/runs/37317574456"
+    },
+    {
+      "kind": "organization_ci",
+      "status": "success",
+      "commit": "edd4587",
+      "url": "https://github.com/Abstract-IT-Group/clarvio-email/actions/runs/37317579297"
+    }
+  ],
+  "pending": [
+    "Prepare/verify actual production host, DNS/domain, provider callbacks and protected credentials.",
+    "Deploy Mail to the real Clarvio server using manual release tooling.",
+    "Run the private MCP service on actual Mail/Agent networks; register, enable and connect the intended user.",
+    "Configure optional trigger bindings, public HTTPS webhook route and signed Mail subscription; verify a controlled incoming event.",
+    "Perform separately authorized controlled live Gmail/Outlook sends and mailbox mutations.",
+    "Yahoo/generic IMAP-SMTP expansion remains unimplemented."
+  ],
+  "unknown": [
+    "Current production server address/access, deployed availability and production credential readiness.",
+    "Exact outcomes of early VS Code/environment/ETA troubleshooting beyond visible user requests.",
+    "Current process health and latest GitHub status after this historical implementation checkpoint."
+  ],
+  "last_session": {
+    "kind": "persistent_project_agent_creation",
+    "observed_date": "2026-10-06",
+    "status": "completed_local_installation",
+    "validation": [
+      {
+        "kind": "offline_memory_behavior",
+        "status": "passed",
+        "count": 8,
+        "command": "python3 -m unittest discover -s tests/memory -v"
+      },
+      {
+        "kind": "skill_metadata",
+        "status": "passed",
+        "count": 2,
+        "details": "skill-creator quick_validate and UI YAML constraints"
+      },
+      {
+        "kind": "agent_profiles",
+        "status": "passed",
+        "count": 2,
+        "details": "TOML and required fields validated; caller model and execution permissions inherited"
+      },
+      {
+        "kind": "local_codex_discovery",
+        "status": "passed",
+        "command": "codex debug prompt-input",
+        "details": "Global and project instructions plus both skill paths appeared; named-agent model execution was not tested"
+      },
+      {
+        "kind": "source_inventory",
+        "status": "passed",
+        "safe_tracked_files": 96,
+        "untracked_source": 0,
+        "skipped_source": 0,
+        "command": "python3 scripts/agent-memory.py check"
+      },
+      {
+        "kind": "workflow_static_validation",
+        "status": "passed",
+        "command": "actionlint"
+      },
+      {
+        "kind": "diff_whitespace",
+        "status": "passed",
+        "command": "git diff --check"
+      }
+    ],
+    "scope": "Agent profiles, scoped skills, knowledge, offline helpers and local discovery; no production deployment or real mail writes",
+    "installed_discovery": [
+      "~/.agents/skills/clarvio-mail",
+      "~/.agents/skills/project-memory",
+      "~/.codex/agents/clarvio_mail.toml",
+      "~/.codex/agents/project_memory.toml"
+    ],
+    "global_continuity_instructions": "~/.codex/AGENTS.md",
+    "publishing_status": "Personal origin-only publication requested after local setup. Verify the actual remote head and CI; organization is explicitly excluded.",
+    "live_model_or_provider_calls": false
+  },
+  "integration_references": {
+    "clarvio-agent": {
+      "observed_date": "2026-10-06",
+      "head": "39e36cb8ba956080213060dfc754bf1891f78ffd",
+      "files": {
+        "docs/connector-contract.md": {
+          "sha256": "3900c117c28b5307608291a38bfb84da45bff421cd7428d463f4fd616009cf91",
+          "bytes": 10976
+        },
+        "app/connectors/manifest.py": {
+          "sha256": "474a8953cb983563b2b79a07f92a2ca66a43631433449e529afc571cf9081a3e",
+          "bytes": 4874
+        },
+        "app/connectors/client.py": {
+          "sha256": "c60143cf3c3cf782800e2ca1ae8815687846d8f8e2dce37fd635c123693cac82",
+          "bytes": 9163
+        },
+        "app/agent/approvals.py": {
+          "sha256": "3d2072dd4b0bcd267c4483ee0a6090ce1bfacd1106377e2fb71897b9f49066fe",
+          "bytes": 9394
+        },
+        "app/api/routers/connectors.py": {
+          "sha256": "7656b78ac5f7c47b71870ca7b508886273c61b002cf5a2c71eb4ccc334744db2",
+          "bytes": 7062
+        },
+        "compose.yaml": {
+          "sha256": "373391c7234dd1c00277712352220a6292b2e3a27a4385b93a033ada19a6adc0",
+          "bytes": 3308
+        }
+      }
+    },
+    "clarvio-agent-front": {
+      "observed_date": "2026-10-06",
+      "head": "b4fbbf98b247a51f4b22adf4455a351b812b1a25",
+      "files": {
+        "package.json": {
+          "sha256": "ff01ad5557187379862ab2f0e7867ee29a2b3f56a0931fd4f18b7f04500f3dc8",
+          "bytes": 941
+        }
+      }
+    }
+  },
+  "ready": true,
+  "publication": {
+    "requested_date": "2026-10-06",
+    "target": "origin/main",
+    "repository": "Ravshan04/clarvio-mail",
+    "excluded_repository": "Abstract-IT-Group/clarvio-email",
+    "remote_heads_observed_before_push": "edd4587cb0d859293842e458676584c1cc5156e4",
+    "verification": "pending actual push; do not infer success from this intent checkpoint"
+  }
+}

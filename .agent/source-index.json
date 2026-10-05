@@ -1,0 +1,686 @@
+{
+  "schema_version": 1,
+  "project": "clarvio-mail",
+  "generated_at": "2026-10-05T20:35:20.628398+00:00",
+  "git_head_at_snapshot": "edd4587cb0d859293842e458676584c1cc5156e4",
+  "content_source": "working_tree_safe_git_tracked_files",
+  "excluded": "agent metadata, private/generated directories, credential files and non-example .env files",
+  "file_count": 96,
+  "total_bytes": 705834,
+  "untracked_source_not_in_snapshot": [],
+  "skipped": [],
+  "files": {
+    ".dockerignore": {
+      "sha256": "673deff28e5beb23706d910d2c802b9dda9302e63f073cb8936929815dc06c11",
+      "bytes": 192,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    ".gitattributes": {
+      "sha256": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c",
+      "bytes": 19,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    ".github/workflows/ci.yml": {
+      "sha256": "24422b0b54435e59effa736fe36fee20e31e0178a64f580b6aa92564818945b2",
+      "bytes": 4352,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    ".gitignore": {
+      "sha256": "9d82f78a933c823f5b7090fbc5d6f96f809831d0812e491e2724641f4e7b05c8",
+      "bytes": 263,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "Clarvio.Mail.slnx": {
+      "sha256": "62867cb974e16dae6de67258b781c72d30434ba96211292ba293d1b390bb5232",
+      "bytes": 231,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "Directory.Build.props": {
+      "sha256": "e9e5c2f32dcaa5e6eee688d6cf90bc6445384177e82f99deef88c91839b3cbd4",
+      "bytes": 258,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "Dockerfile": {
+      "sha256": "ee73c2859e027eb3c7ab8fe08438efa4452868bd5e571198dfeed02ff6035414",
+      "bytes": 978,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "README.md": {
+      "sha256": "af75f0d8932ba3f0adb7501316699d5df24838fd5dc14c9a354a2e20b7fa88dd",
+      "bytes": 23040,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "compose.local.yaml": {
+      "sha256": "c09daa51785fecabceb01646f3ace48556078c34fdb55a94c8f61dd2d0b27cd2",
+      "bytes": 384,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/.dockerignore": {
+      "sha256": "07474aa2607db6e99cb73e72c2392699d2f7f784001bd5dcd37f515748df954a",
+      "bytes": 60,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/Dockerfile": {
+      "sha256": "d202f11e4307a71926f1107f9b6205d0f7fc6576a559573a2cd00b1b3b36b8c7",
+      "bytes": 627,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/bridge.py": {
+      "sha256": "009c1392cd15aa9c027c3108c4a809f6fbcf5c2a09b868eb5ee0ce6cc47c0032",
+      "bytes": 4846,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/client.py": {
+      "sha256": "44b409301ada3150a3daa930380ea0fa93cbee74f8c75056fa7b68608c650ba0",
+      "bytes": 6915,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/doctor.py": {
+      "sha256": "58650908f33a3358248ab6c72931bd60c7ac7b1a322466975144136ae9d5e81e",
+      "bytes": 1878,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/models.py": {
+      "sha256": "c00e9173191536e4bb997de00b164362bd78fe436f682f80193debbd550f00c5",
+      "bytes": 3743,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/pyproject.toml": {
+      "sha256": "335c77ebb2a55316128345729077ea627b2c3e6c1237fe5a1d78fbdd4f8d445c",
+      "bytes": 589,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/requirements.lock": {
+      "sha256": "d6f8980e675395f31887fed3cb8cae81d1814910b3f7b89b4d554560f410c4dd",
+      "bytes": 28235,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/server.py": {
+      "sha256": "c92cf22590e51719c4882a0f4844d8d76597592af2630c73f0b6c43fe05897aa",
+      "bytes": 15194,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/skills/clarvio-mail-operations/SKILL.md": {
+      "sha256": "7b37338cba3709ec5821eed54dfe12fc82bb65252e856bb62390f86fcae0a799",
+      "bytes": 2986,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/tests/test_bridge.py": {
+      "sha256": "64bb3be19842eb2e8f86d80ab7dbbd167e1cf9b8d319b03591fb99b9003fd28f",
+      "bytes": 4711,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/tests/test_http.py": {
+      "sha256": "25937a68402484b4ad74489ced5bb83aa14087e0c1ce0ce0646c290898b7cc0d",
+      "bytes": 3848,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/tests/test_tools.py": {
+      "sha256": "4d03bc0a2131e57572c17f27515f305dba4db25c86a3fe767ca0bc35433719a2",
+      "bytes": 12795,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "connector/uv.lock": {
+      "sha256": "98a0f3b9760593b115a916e84d3138935d4739c909cfd091737dcc6cdc415138",
+      "bytes": 115437,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/.env.example": {
+      "sha256": "43424e0133bfcbf80f404989327958daa20c366d7aa1f92ac8d72c43494b4aab",
+      "bytes": 372,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/Caddyfile": {
+      "sha256": "cf1fd9d06ad8b8e8238aea58bf05451cb37f5c12407f0d0f5c53b93f1b0e55a5",
+      "bytes": 145,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/compose.external-proxy.yaml": {
+      "sha256": "4026ac7c2f99e6325798074d1eeaf24b0b73c11599c3a7e9108525558e804652",
+      "bytes": 260,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/compose.mcp-webhooks.yaml": {
+      "sha256": "6991d74f27c218392d45c610606858ea87f63be9a42b22ff99b42baec47084d3",
+      "bytes": 704,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/compose.mcp.yaml": {
+      "sha256": "d887d9cda0eed47fbb87c1e5cde1483d6cf948373fff4c3dc38b34772b1a0fa2",
+      "bytes": 867,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/compose.yaml": {
+      "sha256": "4b5a64eea4d10ee0522c099d9da8e6e357257da2fa5880166e8c1fe4e1149905",
+      "bytes": 2199,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "deploy/nginx.conf.example": {
+      "sha256": "8b8eab4489852bae793701643d12a5b70878b60ee3f478c423f8a57a13f035a9",
+      "bytes": 736,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/README.md": {
+      "sha256": "ea4e43b36fc2b36aacc3cf335397ab139814ed243a42a46c45f75c1aa7a60371",
+      "bytes": 2111,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/api.md": {
+      "sha256": "8d23dbb232c3ea9b184f873b1a31b5cf52335a5b163fb2298a401cb5b09c6c23",
+      "bytes": 10685,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/architecture.md": {
+      "sha256": "e6b309ca936b0ff766971388d6c3a2df0a4be84bb480f0b5eb9719e609d00dcf",
+      "bytes": 6836,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/deployment.md": {
+      "sha256": "8f26cb5c7307035e0d9e74670525e0dc53c8d341841368d1108caa820796d368",
+      "bytes": 15589,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/local-development.md": {
+      "sha256": "dbf2cdc9d8217dbba7855fbf8fc11d5bc0f8c10b7e12308b12a8a595b549ffc2",
+      "bytes": 5416,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/mcp.md": {
+      "sha256": "21e96772d00fafb32111b5508228bbca49f5e032cdac1669f52d6329020aece6",
+      "bytes": 15820,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/project-agent.md": {
+      "sha256": "6206ee25fee672857a10e002d40edf7e0aa45224e161bf2b96676176aec08bd0",
+      "bytes": 7333,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "docs/webhooks.md": {
+      "sha256": "fa39a38200ffe8011eca4cab7e0a64ff4d7effd90446867443880c9135df5f09",
+      "bytes": 5171,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "dotnet-tools.json": {
+      "sha256": "e48342794ccf9dd33332c04e3c946488ab797c138f07d13b1a26c95b5664b3b9",
+      "bytes": 183,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/agent-memory.py": {
+      "sha256": "f5d8cbbde8c4cb33db21a4b2e80d083e2bafea5356364ce873247cdbe300f969",
+      "bytes": 6184,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/configure-google.py": {
+      "sha256": "e1d8fcc920d92807c7b670687c25f66b9f1d45c8736521d2f709bfa458ccc6c0",
+      "bytes": 4228,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/configure-microsoft.py": {
+      "sha256": "caf8f4b4e3042ab041add8ccf4260b3e672130ca468f7c587f8ce7ec511eebec",
+      "bytes": 4187,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/local.py": {
+      "sha256": "5378e91fbba0cef24d18096afc836dd26c6bf9718b214f9b1f36917e8d31e800",
+      "bytes": 4650,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/mcp-smoke.py": {
+      "sha256": "4a4e6b2737b16615a8bab3a2fec421ccc16e1c57a5b9307aa53f7103bfbfdf32",
+      "bytes": 5739,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/production-smoke.py": {
+      "sha256": "693b009b74c3016d4d290e85758e3c42e83a1527cf273636ba133a9dce169da6",
+      "bytes": 11769,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "scripts/production.py": {
+      "sha256": "350a1618e7bf91982c2254ad0e6adc0d4d1cc9848d8e5df08e5177c65bc3ee89",
+      "bytes": 18345,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Api/ApiDocumentation.cs": {
+      "sha256": "017e8e07528e0138c5800deb12354c2618f443b82fd458019a51431d1c64715d",
+      "bytes": 17611,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Api/DocumentationResponses.cs": {
+      "sha256": "841b05e231e57569e6ecba007577cf797739560ec3e7cf4975a471f6a2d51b05",
+      "bytes": 1619,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Api/Endpoints.cs": {
+      "sha256": "56a775e61d86004e319795df94a9b1ac3971a635917b584606e890a9b3429c9d",
+      "bytes": 14762,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Api/Swagger/clarvio-init.js": {
+      "sha256": "bb35ba1f72bd47e078679050aafdc865129c459cc83eda210df8680b9354ad42",
+      "bytes": 1049,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Api/Swagger/index.html": {
+      "sha256": "5bee3eb5ad5c899520e8b7158c8008d6ae3bb0cf9015d02aa8ea74b9edde811d",
+      "bytes": 446,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Auth/OAuthService.cs": {
+      "sha256": "1b2b9ef3536cdb21e5b1b34cf1de3cb0c98b0a6a8e8d6908ba454836d3b16f76",
+      "bytes": 6551,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Auth/RequestIdentity.cs": {
+      "sha256": "7e79a87c1376fb5a30ccc49d373def1d5f9b94bb2626380291e29094aa00f7e5",
+      "bytes": 3132,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Clarvio.Mail.csproj": {
+      "sha256": "53af6d5c8cb85dff055353c33a0267c16cee3832766aa2fc44be0ff553d84a1b",
+      "bytes": 1091,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Core/ApiError.cs": {
+      "sha256": "c5f69f0e05d0fee90b88e09dea6ecf71f204623bbbdbe5103049326bf2b23d27",
+      "bytes": 631,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Core/ProxyConfiguration.cs": {
+      "sha256": "069a06c4710f3a7e17b5d7edbe304a107011c9635afea89192b29c0270de84b3",
+      "bytes": 773,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Core/Settings.cs": {
+      "sha256": "a7441511b88d7d5b8bf30d3ec1999f4ebec18d50333006728013cf41b061c7b4",
+      "bytes": 3986,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Core/TokenCipher.cs": {
+      "sha256": "f8ce5f7411938625c4afd4ec61dccdf2c61d5412f8782aa7a62f698901160f4f",
+      "bytes": 1503,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Data/DbLocks.cs": {
+      "sha256": "6335a46f04073ed204c85b03c419c36b768b356b9ca583740e0ad12ff2d2c727",
+      "bytes": 667,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Data/Entities.cs": {
+      "sha256": "050c79a7461e1ef77410136c88595219d4d49a668f1e8a5cb42aa68fd494dd15",
+      "bytes": 4579,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Data/MailDb.cs": {
+      "sha256": "20c2899ee464ab132c7ec43c7bf4f903c3ac02f18535af64b0f9377c1fd3e0c3",
+      "bytes": 2741,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Data/Migrations/20261005084746_InitialSchema.Designer.cs": {
+      "sha256": "414f3dcd752c7d3d08b436f165616184a565be7909ca1133e078473be99d1c3a",
+      "bytes": 18140,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Data/Migrations/20261005084746_InitialSchema.cs": {
+      "sha256": "0bb6f5bcc53bd3f229754bfb23beab0cdd0111ff88bf8ff94ff004cbe2ee7cd2",
+      "bytes": 18650,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Data/Migrations/MailDbModelSnapshot.cs": {
+      "sha256": "298ed3325c9930d3059e228b74451a58eaea5fd06d2c5994ff3b681762c3523f",
+      "bytes": 18033,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Program.cs": {
+      "sha256": "70f80db24adbbaf80b5ae99258efa8954ff1bdf8542b0c54d042d69a980ba6ad",
+      "bytes": 6047,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Properties/launchSettings.json": {
+      "sha256": "322bd437f2cee87c9b73e7860e059a681cde65c423617f25b58117685a0b003b",
+      "bytes": 616,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/Contracts.cs": {
+      "sha256": "605f0f8d6424a2eb3409ee904911732eadbb5a18f9414d235952837c283653b1",
+      "bytes": 3980,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/GoogleMailbox.cs": {
+      "sha256": "b9f1ea77e932937bd3d2a44f90485ae3721d28985b83563b414083a6d007893b",
+      "bytes": 6878,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/GoogleProvider.cs": {
+      "sha256": "b26c8cd7b5bd2fd1a4179fdbe57f0098357d9844c79a2bc6cb8762d0f01b4d02",
+      "bytes": 9900,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/MessageValidation.cs": {
+      "sha256": "997b52d8159b629abf2cf108c9f5b4a3fab99c2a4a6b1426efa5214508eb5174",
+      "bytes": 4433,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/MicrosoftMailbox.cs": {
+      "sha256": "0b0cf0acf6c7facafe2a3b20975f4b0cfc6b84be83a3e79ac7e816a8e08aad6f",
+      "bytes": 8363,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/MicrosoftProvider.cs": {
+      "sha256": "785a52853c6eded1ea9dac39b1829a6cea5154529db1c2945775dea9a001745c",
+      "bytes": 11797,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Providers/ProviderHttp.cs": {
+      "sha256": "399331c5cf6d78d1bee7b8b37e25b01399b60e7358ac6bb1d75107d98957a0c8",
+      "bytes": 9694,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Services/MailService.cs": {
+      "sha256": "bd03163be23894bd9c960a09c72a642aad313446884c99246a661ab305a24d15",
+      "bytes": 12841,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Services/MailWorker.cs": {
+      "sha256": "8cb9f56421b3a4b9a6330d2bcfb73ccd651c49b9d7e61a0ff0a08b639bdb1566",
+      "bytes": 7849,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/Services/WebhookTargets.cs": {
+      "sha256": "2168d9f88bb9d1f17bb92688dd9f6c437a54c13a5c1f957f1a1fe3428104a964",
+      "bytes": 2649,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/appsettings.Development.json": {
+      "sha256": "817db0bf2ecca78364c41dbaf7949bf2504cf47a1c3d0d54f3be8178fefc030b",
+      "bytes": 119,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/appsettings.json": {
+      "sha256": "fe839cd897e1d68d41fa41a55da120c5050f71cadeaef7faf45d0656094243f7",
+      "bytes": 239,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/packages.lock.json": {
+      "sha256": "0d8684c7f19647fe239b65448780d62aca22c956dc318f55cd4e570bd367d086",
+      "bytes": 10560,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/wwwroot/app.js": {
+      "sha256": "b1899d6b52bf5365afef78a45c431c48ce2eb8fc05a98881937b050889270ffd",
+      "bytes": 29128,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/wwwroot/index.html": {
+      "sha256": "3b3377def643f59db7276df18d99af2527cb4012396af00fc82e6b3f30d25a1c",
+      "bytes": 546,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/wwwroot/mark.svg": {
+      "sha256": "f1c5c0fd92a969d6e7a0d2bb6b380810126703397962050d859109ec41788c0b",
+      "bytes": 234,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "src/Clarvio.Mail/wwwroot/styles.css": {
+      "sha256": "07eae7333aa8ea1a5391e20ed07553873160ba1eb531124f0a159768bada24eb",
+      "bytes": 7233,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/Clarvio.Mail.Tests.csproj": {
+      "sha256": "39bc4f84b969c43be34e1f003cc5ed48b2bc81bc0c0ed538b2e842cd517da6ec",
+      "bytes": 808,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/DatabaseTests.cs": {
+      "sha256": "dd2f07a71d73b0f5095b7f135c46106168250d7f1c200542a3070be821e09d2f",
+      "bytes": 17266,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/DocumentationTests.cs": {
+      "sha256": "d55c840da453f2974f6063577bc0f54f60e3d196dfacaf0454ac65c16d6fa7c9",
+      "bytes": 7151,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/MailboxProviderTests.cs": {
+      "sha256": "8226fa6120ba61cbe00d8600b9f86090d8440219583d3a14eb113e427c3b5177",
+      "bytes": 16967,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/ProxyTests.cs": {
+      "sha256": "05e4cc3878c512946c8496caecd6986c2475fe7abc7101da40f3262d2bc3b844",
+      "bytes": 1892,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/SecurityTests.cs": {
+      "sha256": "fac83ccfbf518e12fdf3c2e720d9435b4e4d18a06fcdaca2f54672b41eceb64b",
+      "bytes": 5601,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/Clarvio.Mail.Tests/packages.lock.json": {
+      "sha256": "0870451c3a2bbcbde6874104ff96df8abe2ebe63cca170e50d00c6d59175a899",
+      "bytes": 23719,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/memory/test_agent_memory.py": {
+      "sha256": "1b76d0a12808444825b97e3116053219524fa92459324acd690950a068549ec9",
+      "bytes": 6600,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/ui/mailbox.spec.js": {
+      "sha256": "a424965444d2741e0c143653628802da59da176144dd4ed90cef41a73ecc3d95",
+      "bytes": 10502,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/ui/package-lock.json": {
+      "sha256": "1b8beeb24651458cc5df8942e425619be3f661853fb7cde00ac63467cd120f4e",
+      "bytes": 1668,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/ui/package.json": {
+      "sha256": "19afec492d12f3527ad9c193752180bd5301daa316c77e978d622eb76887d5f8",
+      "bytes": 161,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/ui/playwright.config.js": {
+      "sha256": "e71bdfd952e279365ce29ae8e8d66f23ece84ff20aea5e7153861e67ed21e2d4",
+      "bytes": 239,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    },
+    "tests/ui/swagger.spec.js": {
+      "sha256": "8020f4dc6f53991f0cc881a99d185ed6e91b66d6514fca28e366404378fbc4f2",
+      "bytes": 3080,
+      "kind": "file",
+      "git_mode": "100644",
+      "executable": false
+    }
+  }
+}
