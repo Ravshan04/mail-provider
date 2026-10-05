@@ -14,6 +14,7 @@ public sealed class MailSettings
     public ProviderSettings Google { get; set; } = new();
     public ProviderSettings Microsoft { get; set; } = new();
     public int PollSeconds { get; set; } = 60;
+    public bool EnableSwagger { get; set; }
 
     public void Validate(bool production)
     {

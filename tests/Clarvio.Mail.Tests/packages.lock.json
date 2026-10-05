@@ -456,6 +456,11 @@
           "Npgsql": "10.0.3"
         }
       },
+      "Swashbuckle.AspNetCore.SwaggerUI": {
+        "type": "Transitive",
+        "resolved": "10.2.3",
+        "contentHash": "nthWONRs/FJ4yyG206g1cC52WEG8EqrjuMWjGdR+5XG7lbjFto6NqcI9EMICgVFom/UivIjUVwI76ZHbHwTPfQ=="
+      },
       "System.Diagnostics.EventLog": {
         "type": "Transitive",
         "resolved": "10.0.12",
@@ -513,7 +518,8 @@
           "Microsoft.EntityFrameworkCore": "[10.0.12, )",
           "Microsoft.EntityFrameworkCore.Relational": "[10.0.12, )",
           "MimeKit": "[4.18.1, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )",
+          "Swashbuckle.AspNetCore.SwaggerUI": "[10.2.3, )"
         }
       }
     }

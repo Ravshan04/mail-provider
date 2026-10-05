@@ -35,7 +35,7 @@ builder.Services.AddHttpClient("provider", c => c.Timeout = TimeSpan.FromSeconds
 builder.Services.AddHttpClient("webhook", c => c.Timeout = TimeSpan.FromSeconds(10))
     .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler { AllowAutoRedirect = false, UseProxy = false, ConnectCallback = WebhookTargets.Connect, PooledConnectionLifetime = TimeSpan.FromMinutes(1) });
 builder.Services.AddHostedService<MailWorker>();
-builder.Services.AddOpenApi();
+builder.Services.AddMailDocumentation();
 builder.Services.AddRateLimiter(o =>
 {
     foreach (var (name, count) in new[] { ("api", 200), ("send", 20), ("auth", 20) })
@@ -81,12 +81,13 @@ app.Use(async (ctx, next) =>
 });
 app.UseMiddleware<IdentityMiddleware>();
 app.UseRateLimiter();
+app.MapMailDocumentation(settings);
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.MapMailApi();
-if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.MapFallback((HttpContext ctx, IWebHostEnvironment env) =>
-    ctx.Request.Path.StartsWithSegments("/api") || ctx.Request.Path.StartsWithSegments("/auth") || ctx.Request.Path.StartsWithSegments("/health")
+    ctx.Request.Path.StartsWithSegments("/api") || ctx.Request.Path.StartsWithSegments("/auth") || ctx.Request.Path.StartsWithSegments("/health") ||
+        ctx.Request.Path.StartsWithSegments("/swagger") || ctx.Request.Path.StartsWithSegments("/openapi")
         ? Results.NotFound() : Results.File(Path.Combine(env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot"), "index.html"), "text/html"));
 app.Run();
 public partial class Program;

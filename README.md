@@ -14,6 +14,7 @@ An email workspace and HTTP API for connected Microsoft and Gmail accounts. Clar
 - Create expiring API keys with separate read, write, and send scopes; revoke keys from the workspace.
 - Receive signed webhook events through background polling, with retries and delivery history.
 - Review activity without recording email bodies in the audit log.
+- Explore all HTTP endpoints through Swagger UI, with API key authorization, session CSRF support, and request examples.
 
 The browser workspace is served by the API. There is no separate frontend development server.
 
@@ -91,8 +92,8 @@ Requirements:
 Clone the private repository using a GitHub account with access:
 
 ```bash
-git clone https://github.com/Ravshan04/clarvio-mail.git
-cd clarvio-mail
+git clone https://github.com/Abstract-IT-Group/clarvio-email.git
+cd clarvio-email
 ```
 
 ### Microsoft application
@@ -172,6 +173,7 @@ The launcher loads `.local/settings.json` through `CLARVIO_MAIL_CONFIG` in Devel
 | `Mail:Microsoft:CertificatePath` / `CertificatePassword` | PKCS#12 certificate credentials; this application's Production validation requires a certificate when Microsoft is enabled |
 | `Mail:WebhookHosts` | Exact hostnames permitted as webhook destinations; empty by default |
 | `Mail:PollSeconds` | Poll interval for subscribed mailboxes; default 60, minimum 15 seconds |
+| `Mail:EnableSwagger` | Enable Swagger/OpenAPI outside Development; default false |
 
 For environment variables, replace `:` with `__`, for example `Mail__PublicUrl`, `Mail__EncryptionKeys__v1`, and `Mail__WebhookHosts__0`.
 
@@ -217,7 +219,24 @@ Draft bodies wrap this content in `message`. `keepAttachmentIds` selects existin
 
 All send requests require an **`Idempotency-Key` of 16–128 characters**. Reuse the same key when retrying the same send intent. Outcomes are `sending`, `accepted`, `failed`, or `unknown`. `accepted` means provider acceptance, not delivery confirmation. Check the operation and Sent mail before issuing a new send when the outcome is unknown.
 
-Health endpoints are `/health/live` and `/health/ready`. Readiness checks database connectivity. The OpenAPI document is available at `/openapi/v1.json` in Development.
+Health endpoints are `/health/live` and `/health/ready`. Readiness checks database connectivity.
+
+### Swagger UI
+
+Open **http://localhost:8740/swagger** for the interactive API reference. The OpenAPI document is served at `/openapi/v1.json`. All 32 operations are grouped by function, with request examples, response models, error responses, and authentication requirements.
+
+To try mailbox APIs:
+
+1. Sign in to the workspace and create an API key with the needed scopes.
+2. Open Swagger, click **Authorize**, and paste the full `cm_sk_` key into **ApiKey** without the `Bearer` prefix.
+3. Execute `GET /api/v1/mailboxes` to obtain your mailbox ID, then fill the parameters for another operation.
+4. For send/reply/draft-send requests, provide an `Idempotency-Key` of 16–128 characters. Reuse it only for retries of the same send intent.
+
+Session-only operations such as key and webhook management require signing in at `/` in the same browser. The HttpOnly session cookie is sent automatically; it cannot be entered manually in Swagger. The UI obtains the session CSRF token for mutations. Authorization is not persisted across page reloads.
+
+**Try it out executes real requests.** Send, move, delete, and disconnect operations affect the connected mailbox or service state.
+
+Swagger and OpenAPI are enabled in Development. Outside Development, set `Mail__EnableSwagger=true` to enable them explicitly; otherwise their routes return 404. All Swagger assets are bundled locally and use the existing Content Security Policy.
 
 ## Webhooks
 
@@ -247,7 +266,7 @@ npx playwright install chromium
 npm test
 ```
 
-Browser tests intercept email API requests and do not send real messages. At the initial implementation checkpoint, all 41 backend and 7 browser tests passed. Real Gmail and Microsoft folder/draft listing was checked separately; live send and mutation testing remains pending.
+Browser tests intercept email API requests and do not send real messages. At the Swagger implementation checkpoint, all 46 backend and 10 browser tests passed, including documentation generation, Production settings, API key authorization, and Swagger session CSRF handling. Real Gmail and Microsoft folder/draft listing was checked separately; live send and mutation testing remains pending.
 
 ## Current limits and deployment work
 
