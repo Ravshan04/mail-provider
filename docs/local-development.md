@@ -83,7 +83,7 @@ npx playwright install chromium
 npm test
 ```
 
-Browser tests mock mailbox operations and do not send real email. The latest full validation passed 46 backend and 10 browser tests. Real-provider sends and mutations remain unverified.
+Browser tests mock mailbox operations and do not send real email. The latest full validation passed 51 backend and 10 browser tests. Real-provider sends and mutations remain unverified.
 
 ## Troubleshooting
 
@@ -100,4 +100,4 @@ Browser tests mock mailbox operations and do not send real email. The latest ful
 | Swagger is 404 | It is enabled in Development; other environments require `Mail__EnableSwagger=true`. |
 | Send outcome is unknown | Inspect the operation and provider Sent folder before issuing a new send intent. See [send outcomes](api.md#send-outcomes-and-idempotency). |
 
-Production does not load `CLARVIO_MAIL_CONFIG`. See [deployment preparation](deployment.md) before using this service outside local development.
+Production does not load `CLARVIO_MAIL_CONFIG`. See the [server deployment guide](deployment.md) for the production Docker/Compose setup.

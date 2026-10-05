@@ -1,0 +1,89 @@
+name: ${COMPOSE_PROJECT_NAME:-clarvio-mail}
+
+x-app: &app
+  image: ${MAIL_IMAGE:-clarvio-mail:release}
+  env_file:
+    - path: ./secrets/app.env
+      format: raw
+  environment:
+    Mail__TrustedProxies__0: ${MAIL_PROXY_IP:-172.30.87.2}
+  volumes:
+    - ./secrets/microsoft.pfx:/run/secrets/microsoft.pfx:ro
+  networks: [proxy-net, database-net]
+  read_only: true
+  tmpfs: ['/tmp:size=64m,mode=1777']
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  logging:
+    driver: json-file
+    options: {max-size: 10m, max-file: '3'}
+
+services:
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    env_file:
+      - path: ./secrets/postgres.env
+        format: raw
+    volumes: [mail-data:/var/lib/postgresql]
+    networks: [database-net]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U clarvio_mail -d clarvio_mail']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+
+  migrate:
+    <<: *app
+    profiles: [tools]
+    command: [--migrate]
+    restart: 'no'
+    healthcheck: {disable: true}
+
+  app:
+    <<: *app
+    build: {context: '${MAIL_BUILD_CONTEXT:-..}', dockerfile: Dockerfile}
+    networks:
+      proxy-net:
+        ipv4_address: ${MAIL_APP_IP:-172.30.87.3}
+      database-net:
+    restart: unless-stopped
+    depends_on:
+      db: {condition: service_healthy}
+
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      MAIL_DOMAIN: ${MAIL_DOMAIN:?Run scripts/production.py init first}
+      ACME_EMAIL: ${ACME_EMAIL:?Set the certificate contact email}
+    ports: ['80:80', '443:443']
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      proxy-net:
+        ipv4_address: ${MAIL_PROXY_IP:-172.30.87.2}
+    depends_on:
+      app: {condition: service_healthy}
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+
+networks:
+  proxy-net:
+    ipam:
+      config:
+        - subnet: ${MAIL_PROXY_SUBNET:-172.30.87.0/24}
+          gateway: ${MAIL_PROXY_GATEWAY:-172.30.87.1}
+  database-net:
+    internal: true
+
+volumes:
+  mail-data:
+  caddy-data:
+  caddy-config:

@@ -2,7 +2,7 @@
 
 An email workspace and HTTP API for connected Microsoft and Gmail accounts. Clarvio Mail reads and sends through Microsoft Graph and the Gmail API using delegated OAuth authorization.
 
-**Status:** local development is working. Production packaging, deployment, and Clarvio Agent integration are pending. This service connects existing mailboxes; it does not host email domains or run an SMTP server.
+**Status:** local development and production Docker/Compose packaging are implemented. Deployment to the real Clarvio server, live-provider write validation, and Clarvio Agent integration are pending. This service connects existing mailboxes; it does not host email domains or run an SMTP server.
 
 The same source is maintained in two private repositories: [Abstract-IT-Group/clarvio-email](https://github.com/Abstract-IT-Group/clarvio-email) and [Ravshan04/clarvio-mail](https://github.com/Ravshan04/clarvio-mail).
 
@@ -13,7 +13,7 @@ The same source is maintained in two private repositories: [Abstract-IT-Group/cl
 - [API reference and Swagger](docs/api.md)
 - [Architecture and provider adapters](docs/architecture.md)
 - [Webhook integration](docs/webhooks.md)
-- [Production deployment preparation](docs/deployment.md)
+- [Complete server deployment guide](docs/deployment.md)
 
 For a first run, follow **Local setup** below. For HTTP integrations, start with the API reference and the interactive Swagger UI at **http://localhost:8740/swagger**.
 
@@ -88,6 +88,9 @@ src/Clarvio.Mail/
 scripts/        Local credential setup and service launcher
 tests/          Backend and browser tests
 docs/           API, architecture, local setup, webhooks, deployment
+deploy/         Production Compose, HTTPS proxy, host-proxy example
+.github/        Backend, browser, and production deployment CI
+Dockerfile      Production application image
 compose.local.yaml
 ```
 
@@ -197,6 +200,7 @@ The launcher loads `.local/settings.json` through `CLARVIO_MAIL_CONFIG` in Devel
 | `Mail:WebhookHosts` | Exact hostnames permitted as webhook destinations; empty by default |
 | `Mail:PollSeconds` | Poll interval for subscribed mailboxes; default 60, minimum 15 seconds |
 | `Mail:EnableSwagger` | Enable Swagger/OpenAPI outside Development; default false |
+| `Mail:TrustedProxies` | Explicit proxy IP addresses allowed to forward client IP and scheme; supplied by production Compose |
 
 For environment variables, replace `:` with `__`, for example `Mail__PublicUrl`, `Mail__EncryptionKeys__v1`, and `Mail__WebhookHosts__0`.
 
@@ -293,7 +297,29 @@ npx playwright install chromium
 npm test
 ```
 
-Browser tests intercept email API requests and do not send real messages. At the Swagger implementation checkpoint, all 46 backend and 10 browser tests passed, including documentation generation, Production settings, API key authorization, and Swagger session CSRF handling. Real Gmail and Microsoft folder/draft listing was checked separately; live send and mutation testing remains pending.
+Browser tests intercept email API requests and do not send real messages. At the production packaging checkpoint, all 51 backend and 10 browser tests passed, including documentation generation, Production settings, API key authorization, Swagger session CSRF, and trusted proxy handling. Real Gmail and Microsoft folder/draft listing was checked separately; live send and mutation testing remains pending.
+
+Production container verification builds the image and exercises an isolated HTTPS proxy, migrations, health, Swagger policy, OAuth redirect/cookie construction, backup/restore, and host-proxy mode using fake OAuth credentials:
+
+```bash
+python3 scripts/production-smoke.py
+```
+
+GitHub Actions runs the backend, browser, and production container checks on main pushes and pull requests in both repositories. It does not automatically deploy a server.
+
+## Deploy to another server
+
+Follow the [server deployment guide](docs/deployment.md) for host requirements, DNS/OAuth callbacks, Microsoft certificate creation, every configuration change, HTTPS, migrations, monitoring, backups/restores, and upgrades/rollbacks.
+
+With the server, domain, and provider applications prepared:
+
+```bash
+python3 scripts/production.py init
+python3 scripts/production.py check
+python3 scripts/production.py up
+```
+
+The setup generates protected production credentials. Bundled Caddy supplies HTTPS; an existing host proxy can instead use external mode. The API runs as non-root, PostgreSQL has no public port, and migrations run before the API starts. Keep the database and encryption keys together when moving an existing installation.
 
 ## Current limits and deployment work
 
@@ -303,13 +329,14 @@ Browser tests intercept email API requests and do not send real messages. At the
 - The Gmail setup script currently depends on settings initialized by the Microsoft script.
 - Inbox events use polling rather than provider push subscriptions. Validate provider change-event behavior before relying on it in production.
 
-The [deployment preparation guide](docs/deployment.md) describes the required configuration and the production work still pending.
+The [server deployment guide](docs/deployment.md) describes the implemented tooling and the checks needed for an actual rollout.
 
 Before deployment:
 
 - [ ] Run controlled live-provider tests for send, reply, CC/BCC, attachments, drafts, read state, moves, and webhook delivery.
-- [ ] Add a Dockerfile, production Compose/deployment configuration, and CI checks.
-- [ ] Configure the production domain, HTTPS proxy, forwarded headers, and provider callback URLs.
+- [x] Add a Dockerfile, production Compose, deploy/backup/restore commands, and CI checks.
+- [x] Implement trusted forwarded headers and bundled/external HTTPS proxy configuration.
+- [ ] Configure the actual production domain, proxy, and provider callback URLs.
 - [ ] Supply production credentials, the Microsoft certificate, encryption keys, and invited login identities through protected configuration.
 - [ ] Review Google OAuth publishing and restricted-scope verification requirements for the intended audience; see [Google's Gmail scope guidance](https://developers.google.com/workspace/gmail/api/auth/scopes).
 - [ ] Configure database backups, monitoring, migrations, restart behavior, and rollback procedures.

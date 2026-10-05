@@ -1,0 +1,8 @@
+# Used automatically when MAIL_PROXY_MODE=external in deploy/.env.
+services:
+  app:
+    ports: ['127.0.0.1:${MAIL_BIND_PORT:-8740}:8740']
+    environment:
+      Mail__TrustedProxies__0: ${MAIL_PROXY_GATEWAY:-172.30.87.1}
+  proxy:
+    profiles: [bundled-proxy]

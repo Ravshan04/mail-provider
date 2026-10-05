@@ -1,0 +1,13 @@
+**
+!Directory.Build.props
+!src/
+!src/Clarvio.Mail/
+!src/Clarvio.Mail/**
+src/Clarvio.Mail/bin/
+src/Clarvio.Mail/obj/
+src/Clarvio.Mail/Properties/
+**/*.pfx
+**/*.pem
+**/*.key
+**/.env*
+**/.local/

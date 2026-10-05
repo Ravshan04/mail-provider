@@ -9,7 +9,7 @@ Clarvio Mail connects Gmail and Microsoft mailboxes through OAuth and provider H
 | [API reference](api.md) | Swagger, authentication, all 32 operations, payloads, and send outcomes |
 | [Architecture](architecture.md) | Components, ownership, credentials, provider adapters, and persistence |
 | [Webhooks](webhooks.md) | Subscription setup, signed requests, retries, and polling limitations |
-| [Deployment preparation](deployment.md) | Production configuration, release workflow, and unfinished deployment work |
+| [Server deployment](deployment.md) | Fresh server setup, domain/provider changes, HTTPS, release commands, backup/restore, upgrades/rollback |
 
 Local addresses:
 
@@ -23,6 +23,6 @@ Both private repositories contain this documentation and the same source:
 - [Abstract-IT-Group/clarvio-email](https://github.com/Abstract-IT-Group/clarvio-email)
 - [Ravshan04/clarvio-mail](https://github.com/Ravshan04/clarvio-mail)
 
-**Validation status:** 46 backend and 10 browser tests passed at the Swagger implementation checkpoint. Browser/provider mutation tests use mocks. Live Gmail and Microsoft folder/draft reads were checked; live sends, other mailbox mutations, and production deployment still need validation.
+**Validation status:** 51 backend and 10 browser tests passed at the production packaging checkpoint. Container deployment is exercised by `scripts/production-smoke.py`. Browser/provider mutation tests use mocks. Live Gmail and Microsoft folder/draft reads were checked; live sends, other mailbox mutations, and the actual server rollout still need validation.
 
 Yahoo and generic IMAP/SMTP connections are planned. The current service supports Gmail and Microsoft only.

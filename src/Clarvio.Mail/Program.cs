@@ -6,6 +6,7 @@ using Clarvio.Mail.Data;
 using Clarvio.Mail.Providers;
 using Clarvio.Mail.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 if (args.Contains("--healthcheck"))
 {
@@ -22,6 +23,8 @@ var settings = builder.Configuration.GetSection("Mail").Get<MailSettings>() ?? n
 settings.Validate(!builder.Environment.IsDevelopment());
 builder.WebHost.ConfigureKestrel(o => { o.AddServerHeader = false; o.Limits.MaxRequestBodySize = 4 * 1024 * 1024; });
 builder.Services.AddSingleton(settings);
+if (settings.TrustedProxies.Length > 0)
+    builder.Services.Configure<ForwardedHeadersOptions>(options => ProxyConfiguration.Configure(options, settings));
 builder.Services.AddSingleton<TokenCipher>();
 builder.Services.AddDbContext<MailDb>(o => o.UseNpgsql(settings.Database));
 builder.Services.AddScoped<OAuthService>();
@@ -55,6 +58,7 @@ if (args.Contains("--migrate"))
     await scope.ServiceProvider.GetRequiredService<MailDb>().Database.MigrateAsync();
     return;
 }
+if (settings.TrustedProxies.Length > 0) app.UseForwardedHeaders();
 app.Use(async (ctx, next) =>
 {
     ctx.Response.Headers["X-Content-Type-Options"] = "nosniff";

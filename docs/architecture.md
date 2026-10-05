@@ -74,4 +74,4 @@ The current worker runs inside the application process. There is no separate job
 
 Provider calls and local persistence are separate systems. Interrupted sends can have unknown outcomes; multipart draft edits can be partially applied by a provider. Read the [API outcome guidance](api.md#send-outcomes-and-idempotency) before implementing retries.
 
-Local development works and Swagger is implemented. Production packaging, deployment, and Clarvio Agent integration remain pending; see [deployment preparation](deployment.md).
+Local development, Swagger, production Docker/Compose packaging, trusted proxy handling, release commands, and backup/restore are implemented. The actual Clarvio server deployment and Agent integration remain pending; see the [server deployment guide](deployment.md).

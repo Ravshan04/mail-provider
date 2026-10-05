@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Net;
 
 namespace Clarvio.Mail.Core;
 
@@ -15,6 +16,7 @@ public sealed class MailSettings
     public ProviderSettings Microsoft { get; set; } = new();
     public int PollSeconds { get; set; } = 60;
     public bool EnableSwagger { get; set; }
+    public string[] TrustedProxies { get; set; } = [];
 
     public void Validate(bool production)
     {
@@ -31,6 +33,8 @@ public sealed class MailSettings
                 throw new InvalidOperationException("Encryption keys need a simple id and exactly 32 bytes in base64.");
         }
         if (PollSeconds < 15) throw new InvalidOperationException("PollSeconds must be at least 15.");
+        if (TrustedProxies.Any(address => !IPAddress.TryParse(address, out _)))
+            throw new InvalidOperationException("TrustedProxies must contain explicit IP addresses.");
         Microsoft.Tenant = Microsoft.Tenant.Trim();
         if (Microsoft.Tenant is not ("common" or "organizations" or "consumers") && !Guid.TryParse(Microsoft.Tenant, out _))
             throw new InvalidOperationException("Microsoft tenant must be common, organizations, consumers, or a tenant GUID.");

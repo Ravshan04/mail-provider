@@ -1,0 +1,75 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: clarvio_mail_ci
+          POSTGRES_PASSWORD: ci-test-only
+        ports: ['5432:5432']
+        options: --health-cmd "pg_isready -U postgres -d clarvio_mail_ci" --health-interval 3s --health-timeout 3s --health-retries 30
+    env:
+      CLARVIO_MAIL_TEST_ADMIN_DATABASE: Host=127.0.0.1;Port=5432;Database=clarvio_mail_ci;Username=postgres;Password=ci-test-only
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with: {persist-credentials: false}
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with: {dotnet-version: '10.0.401'}
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/ui/package-lock.json
+      - name: Restore and backend tests
+        run: |
+          dotnet restore --locked-mode
+          dotnet test Clarvio.Mail.slnx --configuration Release --no-restore
+      - name: Install browser dependencies
+        working-directory: tests/ui
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Browser tests with a disposable API configuration
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          ASPNETCORE_URLS: http://127.0.0.1:8740
+          Mail__Database: Host=127.0.0.1;Port=5432;Database=clarvio_mail_ci;Username=postgres;Password=ci-test-only
+          Mail__PublicUrl: http://localhost:8740
+          Mail__AllowSignup: 'false'
+        run: |
+          mkdir -p .local
+          export Mail__EncryptionKeys__v1="$(openssl rand -base64 32)"
+          dotnet src/Clarvio.Mail/bin/Release/net10.0/Clarvio.Mail.dll --migrate
+          (cd src/Clarvio.Mail && dotnet bin/Release/net10.0/Clarvio.Mail.dll) > .local/ci-api.log 2>&1 &
+          api_pid=$!
+          trap 'kill "$api_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --silent --fail http://127.0.0.1:8740/health/ready > /dev/null; then break; fi
+            sleep 1
+          done
+          curl --silent --fail http://127.0.0.1:8740/health/ready
+          npm test --prefix tests/ui
+  production:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with: {persist-credentials: false}
+      - name: Validate Python and production deployment
+        run: |
+          python3 -m py_compile scripts/production.py scripts/production-smoke.py
+          python3 scripts/production-smoke.py

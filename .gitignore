@@ -13,3 +13,6 @@ TestResults/
 **/__pycache__/
 tests/ui/test-results/
 tests/ui/playwright-report/
+deploy/secrets/
+deploy/backups/
+artifacts/
